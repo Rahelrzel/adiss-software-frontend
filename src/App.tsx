@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { testConnection } from "../api/testApi";
+import { testConnection } from "./api/testApi";
 
 function App() {
   const [message, setMessage] = useState<string>("Testing backend connection...");
