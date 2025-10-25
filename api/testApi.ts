@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://adiss-software-backend.onrender.com"; // change to your actual backend route
+const API_URL = "https://adiss-software-backend.onrender.com/api/test"; // change to your actual backend route
 
 export const testConnection = async () => {
   try {
