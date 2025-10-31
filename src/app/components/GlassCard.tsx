@@ -19,8 +19,9 @@ export default GlassCard;
 
 // Styled Component
 const CardContainer = styled.div`
+  position: relative;
   backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.11);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
@@ -31,6 +32,7 @@ const CardContainer = styled.div`
   padding: 2rem;
   color: #fff;
   z-index: 2;
+  margin: 0.5rem;
 
   transition: all 0.3s ease;
 `;

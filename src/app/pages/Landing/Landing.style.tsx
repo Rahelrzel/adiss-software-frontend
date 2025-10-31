@@ -10,7 +10,7 @@ export const Header = styled.header`
 `;
 
 export const Logo = styled.div`
-  font-size: 1.75rem;
+  font-size: 1rem;
   font-weight: 700;
   color: white;
   letter-spacing: -0.5px;
