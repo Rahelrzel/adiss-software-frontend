@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { testConnection } from "./api/testApi";
+import { testConnection } from "./app/api/testApi";
 
 function App() {
-  const [message, setMessage] = useState<string>("Testing backend connection...");
+  const [message, setMessage] = useState<string>(
+    "Testing backend connection..."
+  );
 
   useEffect(() => {
     const checkBackend = async () => {
       const result = await testConnection();
-      if (result) setMessage(`✅ Connected to backend: ${JSON.stringify(result)}`);
+      if (result)
+        setMessage(`✅ Connected to backend: ${JSON.stringify(result)}`);
       else setMessage("❌ Could not connect to backend");
     };
     checkBackend();

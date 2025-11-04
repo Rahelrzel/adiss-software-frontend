@@ -1,32 +1,149 @@
 import styled from "@emotion/styled";
+import { keyframes } from "@emotion/react";
+import type {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+  FC,
+  ReactNode,
+} from "react";
+import { BiLoaderAlt } from "react-icons/bi";
 
-export const Button = styled.button<{
-  variant?: "primary" | "secondary";
+// ✅ Available color schemes
+const colorSchemes = {
+  white: {
+    background: "#ffffffff",
+    hover: "#d6d6d6ff",
+    color: "#1a0033",
+  },
+  blue: {
+    background: "#007BFF",
+    hover: "#339CFF",
+    color: "#fff",
+  },
+  red: {
+    background: "#FF4C4C",
+    hover: "#FF6B6B",
+    color: "#fff",
+  },
+  default: {
+    background: "transparent",
+    hover: "rgba(255,255,255,0.1)",
+    color: "#ffffff",
+  },
+};
+
+// ✅ Available button shapes
+const shapeToBorderRadius = {
+  round: "50px",
+  circle: "100%",
+  rectangle: "6px",
+};
+
+interface ButtonProps
+  extends DetailedHTMLProps<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  children?: ReactNode;
+  leftIcon?: ReactNode;
+  colorScheme?: keyof typeof colorSchemes;
+  shape?: keyof typeof shapeToBorderRadius;
+  glow?: boolean;
+  isLoading?: boolean;
   width?: string;
   height?: string;
-  radius?: string;
-  bgColor?: string;
-  textColor?: string;
-  borderColor?: string;
-}>`
-  display: inline-flex;
-  justify-content: center;
+}
+
+// ✅ Button component
+export const Button: FC<ButtonProps> = ({
+  children,
+  leftIcon,
+  colorScheme = "default",
+  shape = "rectangle",
+  glow = false,
+  isLoading = false,
+  width = "200px",
+  height = "40px",
+  ...props
+}) => {
+  return (
+    <ButtonContainer
+      {...props}
+      colorScheme={colorScheme}
+      shape={shape}
+      glow={glow}
+      width={width}
+      height={height}
+      disabled={isLoading}
+    >
+      {isLoading ? (
+        <Spinner>
+          <BiLoaderAlt />
+        </Spinner>
+      ) : (
+        <>
+          {leftIcon && <IconWrapper>{leftIcon}</IconWrapper>}
+          {children}
+        </>
+      )}
+    </ButtonContainer>
+  );
+};
+
+// ✅ Styled Components
+const ButtonContainer = styled.button<ButtonProps>`
+  display: flex;
   align-items: center;
-  width: ${(props) => props.width || "auto"};
-  height: ${(props) => props.height || "40px"};
-  padding: 1rem 2.5rem;
-  border-radius: ${(props) => props.radius || "50px"};
+  justify-content: center;
+  gap: 10px;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  border-radius: ${(props) => shapeToBorderRadius[props.shape || "rectangle"]};
+  border: none;
+  cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  cursor: pointer;
+  text-transform: uppercase;
   transition: all 0.3s ease;
-
   background: ${(props) =>
-    props.variant === "secondary" ? "transparent" : props.bgColor || "white"};
-  color: ${(props) =>
-    props.textColor || (props.variant === "secondary" ? "white" : "#1a0033")};
-  border: ${(props) =>
-    props.variant === "secondary"
-      ? `2px solid ${props.borderColor || "rgba(255, 255, 255, 0.3)"}`
+    colorSchemes[props.colorScheme || "default"].background};
+  color: ${(props) => colorSchemes[props.colorScheme || "default"].color};
+  box-shadow: ${(props) =>
+    props.glow
+      ? `0 0 15px ${colorSchemes[props.colorScheme || "default"].background}80`
       : "none"};
+
+  &:hover {
+    background: ${(props) =>
+      colorSchemes[props.colorScheme || "default"].hover};
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 `;
+
+const IconWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+`;
+
+// ✅ Spinner animation
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const Spinner = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4em;
+  animation: ${spin} 0.6s linear infinite;
+`;
+
+export default Button;

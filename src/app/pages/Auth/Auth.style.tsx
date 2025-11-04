@@ -66,3 +66,8 @@ export const Linked = styled.a({
     textDecoration: "underline",
   },
 });
+
+export const Form = styled.form({
+  display: "flex",
+  flexDirection: "column",
+});

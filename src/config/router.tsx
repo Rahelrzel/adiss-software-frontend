@@ -3,6 +3,7 @@ import LoginPage from "../app/pages/Auth/Login";
 import Register from "../app/pages/Auth/Register";
 import Landing from "../app/pages/Landing/Landing";
 import Dashboard from "../app/pages/Dashboard/Dashboard";
+import CreatePlaylist from "../app/pages/playlist/CreatePlaylist";
 
 export const routerConfig = createBrowserRouter([
   {
@@ -17,5 +18,9 @@ export const routerConfig = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/createPlaylist",
+    element: <CreatePlaylist />,
   },
 ]);
