@@ -3,6 +3,7 @@ import createSagaMiddleware from "redux-saga";
 import { routerConfig } from "../../../config/router";
 import userReducer from "../user/userSlice";
 import playlistReducer from "../playlist/playlistSlice";
+import songReducer from "../song/songSlice";
 import { rootSaga } from "./saga";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -15,6 +16,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
     playlist: playlistReducer,
+    song: songReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

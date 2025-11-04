@@ -119,12 +119,3 @@ export function* watchDeletePlaylist() {
 export function* watchFetchPlaylistById() {
   yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
 }
-
-/* 🧩 Root Playlist Saga */
-export function* playlistSaga() {
-  yield takeEvery(fetchPlaylistsRequest.type, FetchPlaylists);
-  yield takeEvery(createPlaylistRequest.type, CreatePlaylist);
-  yield takeEvery(updatePlaylistRequest.type, UpdatePlaylist);
-  yield takeEvery(deletePlaylistRequest.type, DeletePlaylist);
-  yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
-}

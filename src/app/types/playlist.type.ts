@@ -1,8 +1,10 @@
+import type { SongResponse } from "./song.type";
+
 export interface Playlist {
   _id: string;
   name: string;
   description?: string;
-  songs: Song[];
+  songs: SongResponse[];
   isPublished: boolean;
   userId: {
     _id: string;
@@ -11,14 +13,6 @@ export interface Playlist {
   };
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface Song {
-  _id: string;
-  title: string;
-  artist: string;
-  album: string;
-  genre: string;
 }
 
 export interface PlaylistResponse extends Playlist {}

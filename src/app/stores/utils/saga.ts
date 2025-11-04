@@ -7,6 +7,14 @@ import {
   watchDeletePlaylist,
   watchFetchPlaylistById,
 } from "../playlist/playlistSaga";
+import { albumSaga } from "../album/albumSaga";
+import { artistSaga } from "../artist/artistSaga";
+import { genreSaga } from "../genre/generSaga";
+import {
+  watchCreateSong,
+  watchFetchSong,
+  watchGetSongById,
+} from "../song/songSaga";
 
 export function* rootSaga() {
   yield all([
@@ -17,5 +25,11 @@ export function* rootSaga() {
     watchUpdatePlaylist(),
     watchDeletePlaylist(),
     watchFetchPlaylistById(),
+    albumSaga(),
+    artistSaga(),
+    genreSaga(),
+    watchFetchSong(),
+    watchCreateSong(),
+    watchGetSongById(),
   ]);
 }
