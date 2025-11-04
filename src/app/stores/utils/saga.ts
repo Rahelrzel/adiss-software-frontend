@@ -5,6 +5,7 @@ import {
   watchCreatePlaylist,
   watchUpdatePlaylist,
   watchDeletePlaylist,
+  watchFetchPlaylistById,
 } from "../playlist/playlistSaga";
 
 export function* rootSaga() {
@@ -15,5 +16,6 @@ export function* rootSaga() {
     watchCreatePlaylist(),
     watchUpdatePlaylist(),
     watchDeletePlaylist(),
+    watchFetchPlaylistById(),
   ]);
 }

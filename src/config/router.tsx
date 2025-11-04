@@ -4,6 +4,7 @@ import Register from "../app/pages/Auth/Register";
 import Landing from "../app/pages/Landing/Landing";
 import Dashboard from "../app/pages/Dashboard/Dashboard";
 import CreatePlaylist from "../app/pages/playlist/CreatePlaylist";
+import PlaylistById from "../app/pages/playlist/playlistById/PlaylistById";
 
 export const routerConfig = createBrowserRouter([
   {
@@ -22,5 +23,9 @@ export const routerConfig = createBrowserRouter([
   {
     path: "/createPlaylist",
     element: <CreatePlaylist />,
+  },
+  {
+    path: "/playlist/:id",
+    element: <PlaylistById />,
   },
 ]);

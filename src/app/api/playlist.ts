@@ -24,16 +24,16 @@ const createPlaylist = async (data: CreatePlaylistParams, token: string) => {
   return playlist;
 };
 
-const getPlaylists = async () => {
+const getPlaylists = async (token: string) => {
   const playlists = await axios
-    .get<PlaylistResponse[]>(`${apiUrl}/api/playlists`)
+    .get<PlaylistResponse[]>(`${apiUrl}/api/playlist`, authHeader(token))
     .then((res) => res.data);
   return playlists;
 };
 
-const getPlaylistById = async (id: string) => {
+const getPlaylistById = async (id: string, token: string) => {
   const playlist = await axios
-    .get<PlaylistResponse>(`${apiUrl}/api/playlists/${id}`)
+    .get<PlaylistResponse>(`${apiUrl}/api/playlist/${id}`, authHeader(token))
     .then((res) => res.data);
   return playlist;
 };

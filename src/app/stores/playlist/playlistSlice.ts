@@ -56,6 +56,21 @@ const playlistSlice = createSlice({
       state.loading = false;
     },
 
+    fetchPlaylistByIdRequest: (state, _action: PayloadAction<string>) => {
+      state.loading = true;
+    },
+    fetchPlaylistByIdSuccess: (
+      state,
+      action: PayloadAction<PlaylistResponse>
+    ) => {
+      state.currentPlaylist = action.payload;
+      state.loading = false;
+    },
+    fetchPlaylistByIdError: (state, action: PayloadAction<ErrorResponse>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     updatePlaylistRequest: (
       state,
       _action: PayloadAction<UpdatePlaylistParams>
@@ -101,6 +116,9 @@ export const {
   deletePlaylistRequest,
   deletePlaylistSuccess,
   deletePlaylistError,
+  fetchPlaylistByIdRequest,
+  fetchPlaylistByIdSuccess,
+  fetchPlaylistByIdError,
 } = playlistSlice.actions;
 
 export default playlistSlice.reducer;

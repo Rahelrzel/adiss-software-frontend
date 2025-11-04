@@ -6,10 +6,7 @@ export const Container = styled.div`
   padding: 1rem;
   gap: 1rem;
 `;
-export const Main = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -154,4 +151,21 @@ const CardInfo = styled.div`
     font-size: 13px;
     opacity: 0.9;
   }
+`;
+
+export const PlaylistGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+export const Main = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  max-height: 100vh; /* full viewport height */
+  overflow-y: auto; /* scroll when content overflows */
+  padding: 20px;
 `;

@@ -19,12 +19,19 @@ import {
   deletePlaylistRequest,
   deletePlaylistSuccess,
   deletePlaylistError,
+  fetchPlaylistByIdSuccess,
+  fetchPlaylistByIdError,
+  fetchPlaylistByIdRequest,
 } from "./playlistSlice";
 
 function* FetchPlaylists() {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("User token not found");
+
     let playlists: SagaReturnType<typeof PlaylistApi.getPlaylists> = yield call(
-      PlaylistApi.getPlaylists
+      PlaylistApi.getPlaylists,
+      token
     );
     console.log("✅ [Saga] Fetch Playlists:", playlists);
     yield put(fetchPlaylistsSuccess(playlists));
@@ -40,8 +47,6 @@ function* CreatePlaylist(action: PayloadAction<CreatePlaylistParams>) {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("User token not found");
 
-    if (!token) throw new Error("User token not found");
-
     let playlist: SagaReturnType<typeof PlaylistApi.createPlaylist> =
       yield call(PlaylistApi.createPlaylist, action.payload, token);
     console.log("✅ [Saga] Create Playlist:", playlist);
@@ -49,6 +54,22 @@ function* CreatePlaylist(action: PayloadAction<CreatePlaylistParams>) {
   } catch (e) {
     if (e instanceof AxiosError) {
       yield put(createPlaylistError(e.response?.data));
+    }
+  }
+}
+
+function* FetchPlaylistById(action: PayloadAction<string>) {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("User token not found");
+
+    const playlist: SagaReturnType<typeof PlaylistApi.getPlaylistById> =
+      yield call(PlaylistApi.getPlaylistById, action.payload, token);
+    console.log("✅ [Saga] Fetch Playlist By ID:", playlist);
+    yield put(fetchPlaylistByIdSuccess(playlist));
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      yield put(fetchPlaylistByIdError(e.response?.data));
     }
   }
 }
@@ -95,6 +116,9 @@ export function* watchUpdatePlaylist() {
 export function* watchDeletePlaylist() {
   yield takeEvery(deletePlaylistRequest.type, DeletePlaylist);
 }
+export function* watchFetchPlaylistById() {
+  yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
+}
 
 /* 🧩 Root Playlist Saga */
 export function* playlistSaga() {
@@ -102,4 +126,5 @@ export function* playlistSaga() {
   yield takeEvery(createPlaylistRequest.type, CreatePlaylist);
   yield takeEvery(updatePlaylistRequest.type, UpdatePlaylist);
   yield takeEvery(deletePlaylistRequest.type, DeletePlaylist);
+  yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
 }
