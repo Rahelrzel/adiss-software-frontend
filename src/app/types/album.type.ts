@@ -1,6 +1,6 @@
 export interface Album {
   _id: string;
   name: string;
-  releaseYear: number;
+  releaseYear: string;
   artistId: string;
 }

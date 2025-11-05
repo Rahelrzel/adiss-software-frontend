@@ -4,7 +4,7 @@ import type { Album } from "../types/album.type";
 
 export interface CreateAlbumParams {
   name: string;
-  releaseYear: number;
+  releaseYear: string;
   artistId: string;
 }
 

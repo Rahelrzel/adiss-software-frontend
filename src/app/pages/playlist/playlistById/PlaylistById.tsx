@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../stores/utils/hooks";
 import { fetchPlaylistByIdRequest } from "../../../stores/playlist/playlistSlice";
 import { Flex } from "../../../components/ui/Flex.syle";
@@ -10,6 +10,7 @@ import Button from "../../../components/ui/Button";
 import { SongCard } from "./playlistById.style";
 
 const PlaylistById = () => {
+  const router = useNavigate();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentPlaylist: playlist, loading } = useAppSelector(
@@ -57,7 +58,7 @@ const PlaylistById = () => {
               <p style={{ color: "white" }}>
                 Songs: {playlist.songs?.length || 0}
               </p>
-              <Button>Add song</Button>
+              <Button onClick={() => router("/createSong")}>Add song</Button>
             </Flex>
           </Flex>
 
@@ -67,7 +68,7 @@ const PlaylistById = () => {
                 <SongCard image={"/src/assets/default-song.png"} />
                 <Flex direction="column">
                   <div style={{ color: "white" }}>{song.title}</div>
-                  <div style={{ color: "#ccc" }}>{song.artist}</div>
+                  <div style={{ color: "#ccc" }}>{song.artistId}</div>
                 </Flex>
               </Flex>
             ))}

@@ -12,6 +12,7 @@ interface InputProps {
   disabled?: boolean;
   error?: string | undefined;
   touched?: boolean | undefined;
+  readOnly?: boolean;
 }
 
 const sizeStyles = {
@@ -59,6 +60,8 @@ interface FormikInputProps {
   type?: string;
   inputSize?: "sm" | "md" | "lg";
   disabled?: boolean;
+  readOnly?: boolean;
+  value?: string;
 }
 
 export const FormikInput: FC<FormikInputProps> = ({
@@ -68,9 +71,12 @@ export const FormikInput: FC<FormikInputProps> = ({
   type = "text",
   inputSize = "md",
   disabled,
+  readOnly,
+  value,
 }) => {
   const error = formik.errors[name];
   const touched = formik.touched[name];
+  const displayValue = value !== undefined ? value : formik.values[name];
 
   return (
     <div style={{ width: "100%" }}>
@@ -78,13 +84,14 @@ export const FormikInput: FC<FormikInputProps> = ({
         name={name}
         type={type}
         placeholder={placeholder}
-        value={formik.values[name]}
+        value={displayValue}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         inputSize={inputSize}
         disabled={disabled}
         error={error}
         touched={touched}
+        readOnly={readOnly}
       />
       {touched && error && <ErrorText>{error}</ErrorText>}
     </div>

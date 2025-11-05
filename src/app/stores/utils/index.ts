@@ -4,6 +4,10 @@ import { routerConfig } from "../../../config/router";
 import userReducer from "../user/userSlice";
 import playlistReducer from "../playlist/playlistSlice";
 import songReducer from "../song/songSlice";
+import artistReducer from "../artist/artistSlice";
+import genreReducer from "../genre/genreSlice";
+import albumReducer from "../genre/genreSlice";
+
 import { rootSaga } from "./saga";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -17,6 +21,9 @@ const store = configureStore({
     user: userReducer,
     playlist: playlistReducer,
     song: songReducer,
+    artist: artistReducer,
+    genre: genreReducer,
+    album: albumReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

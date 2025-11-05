@@ -9,20 +9,27 @@ import { Form } from "../Auth/Auth.style";
 import { StyledForm, Text } from "./song.style";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
 import { createSongRequest } from "../../stores/song/songSlice";
+import { getArtistsRequest } from "../../stores/artist/artistSlice";
+import { getGenresRequest } from "../../stores/genre/genreSlice"; // ✅ make sure you have this slice
 import { CreateSongSchema } from "./validation";
-import { Flex } from "../../components/ui/Flex.syle";
-import { BiDownArrow, BiDownArrowAlt, BiPlus } from "react-icons/bi";
+import { Flex } from "../../components/ui/Flex.syle.tsx";
+import { BiPlus } from "react-icons/bi";
 import { MdArrowDropDown } from "react-icons/md";
-import PopupModal from "../../components/ui/Modal";
-import { createArtistRequest } from "../../stores/artist/artistSlice";
 
 const CreateSong = () => {
-  const [isArtistModalOpen, setIsArtistModalOpen] = useState(false);
-
   const router = useNavigate();
   const dispatch = useAppDispatch();
   const songState = useAppSelector((state) => state.song);
+  const artistState = useAppSelector((state) => state.artist);
+  const genreState = useAppSelector((state) => state.genre);
   const hasSubmitted = useRef(false);
+
+  const [artistName, setArtistName] = useState("");
+  const [genreName, setGenreName] = useState("");
+  const [albumName, setAlbumName] = useState("");
+
+  const [showArtistDropdown, setShowArtistDropdown] = useState(false);
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -57,9 +64,25 @@ const CreateSong = () => {
     }
   }, [songState.error]);
 
+  // --- Fetch artists when dropdown is opened ---
+  const handleArtistDropdown = () => {
+    if (!showArtistDropdown) {
+      dispatch(getArtistsRequest());
+    }
+    setShowArtistDropdown((prev) => !prev);
+  };
+
+  // --- Fetch genres when dropdown is opened ---
+  const handleGenreDropdown = () => {
+    if (!showGenreDropdown) {
+      dispatch(getGenresRequest());
+    }
+    setShowGenreDropdown((prev) => !prev);
+  };
+
   return (
     <Background>
-      <GlassCard width="420px" height="650px">
+      <GlassCard width="420px" height="700px">
         <Text>Create Song</Text>
         <Form onSubmit={formik.handleSubmit}>
           <StyledForm>
@@ -68,57 +91,159 @@ const CreateSong = () => {
               formik={formik}
               placeholder="Song title"
             />
-            <Flex direction="row" gap="10px">
-              <FormikInput
-                name="artistId"
-                formik={formik}
-                placeholder="Artist "
-              />
-              <Button width="50px" leftIcon={<MdArrowDropDown />} />
-              <Button
-                width="50px"
-                leftIcon={<BiPlus onClick={() => setIsArtistModalOpen(true)} />}
-              />
-              <PopupModal
-                isOpen={isArtistModalOpen}
-                onClose={() => setIsArtistModalOpen(false)}
-                title="Create Artist"
-              >
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const artistName = (e.target as any).elements.artistName
-                      .value;
-                    dispatch(
-                      createArtistRequest({
-                        name: artistName,
-                        userId: "currentUserId",
-                      })
-                    );
-                    setIsArtistModalOpen(false);
+
+            {/* Artist Dropdown */}
+            <div style={{ position: "relative", width: "100%" }}>
+              <Flex direction="row" gap="10px">
+                <FormikInput
+                  name="artistId"
+                  formik={formik}
+                  placeholder="Select Artist"
+                  readOnly
+                  value={artistName}
+                />
+                <Button
+                  width="50px"
+                  type="button"
+                  leftIcon={<MdArrowDropDown />}
+                  onClick={handleArtistDropdown}
+                />
+                <Button
+                  width="50px"
+                  leftIcon={<BiPlus />}
+                  type="button"
+                  onClick={() => router("/artist/create")}
+                />
+              </Flex>
+
+              {showArtistDropdown && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "60px",
+                    left: "0",
+                    width: "250px",
+                    background: "rgba(0, 0, 0, 1)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: "8px",
+                    maxHeight: "150px",
+                    overflowY: "auto",
+                    zIndex: 100,
                   }}
                 >
-                  <FormikInput
-                    name="artistName"
-                    formik={formik}
-                    placeholder="Artist Name"
-                  />
-                  <Button type="submit" colorScheme="white" glow>
-                    Create
-                  </Button>
-                </form>
-              </PopupModal>
-            </Flex>
+                  {artistState.loading ? (
+                    <div style={{ padding: "8px 12px" }}>Loading...</div>
+                  ) : artistState.artists.length > 0 ? (
+                    artistState.artists.map((artist) => (
+                      <div
+                        key={artist._id}
+                        style={{
+                          padding: "8px 12px",
+                          cursor: "pointer",
+                          borderBottom: "1px solid rgba(255,255,255,0.1)",
+                        }}
+                        onClick={() => {
+                          formik.setFieldValue("artistId", artist._id);
+                          setArtistName(artist.name);
+                          setShowArtistDropdown(false);
+                        }}
+                      >
+                        {artist.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "8px 12px" }}>No artists found</div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Genre Dropdown */}
+            <div style={{ position: "relative", width: "100%" }}>
+              <Flex direction="row" gap="10px">
+                <FormikInput
+                  name="genres"
+                  formik={formik}
+                  placeholder="Select Genre"
+                  readOnly
+                  value={genreName}
+                />
+                <Button
+                  width="50px"
+                  type="button"
+                  leftIcon={<MdArrowDropDown />}
+                  onClick={handleGenreDropdown}
+                />
+                <Button
+                  width="50px"
+                  leftIcon={<BiPlus />}
+                  type="button"
+                  onClick={() => router("/genre/create")}
+                />
+              </Flex>
+
+              {showGenreDropdown && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "60px",
+                    left: "0",
+                    width: "250px",
+                    background: "rgba(0, 0, 0, 1)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: "8px",
+                    maxHeight: "150px",
+                    overflowY: "auto",
+                    zIndex: 100,
+                  }}
+                >
+                  {genreState.loading ? (
+                    <div style={{ padding: "8px 12px" }}>Loading...</div>
+                  ) : genreState.genres.length > 0 ? (
+                    genreState.genres.map((genre) => (
+                      <div
+                        key={genre._id}
+                        style={{
+                          padding: "8px 12px",
+                          cursor: "pointer",
+                          borderBottom: "1px solid rgba(255,255,255,0.1)",
+                        }}
+                        onClick={() => {
+                          formik.setFieldValue("genres", [genre._id]); // store array of genre IDs
+                          setGenreName(genre.name);
+                          setShowGenreDropdown(false);
+                        }}
+                      >
+                        {genre.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "8px 12px" }}>No genres found</div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <Flex direction="row" gap="10px">
-              <FormikInput name="albumId" formik={formik} placeholder="Album" />
-              <Button width="50px" leftIcon={<MdArrowDropDown />} />
-              <Button width="50px" leftIcon={<BiPlus />} />
-            </Flex>
-            <Flex direction="row" gap="10px">
-              <FormikInput name="genres" formik={formik} placeholder="Genres" />
-              <Button width="50px" leftIcon={<MdArrowDropDown />} />
-              <Button width="50px" leftIcon={<BiPlus />} />
+              <FormikInput
+                name="album"
+                formik={formik}
+                placeholder="Select Album"
+                readOnly
+                value={genreName}
+              />
+              <Button
+                width="50px"
+                type="button"
+                leftIcon={<MdArrowDropDown />}
+                onClick={handleGenreDropdown}
+              />
+              <Button
+                width="50px"
+                leftIcon={<BiPlus />}
+                type="button"
+                onClick={() => router("/album/create")}
+              />
             </Flex>
             <FormikInput
               name="spotifyUrl"

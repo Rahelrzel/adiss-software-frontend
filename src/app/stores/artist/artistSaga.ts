@@ -25,9 +25,12 @@ function* createArtist(action: PayloadAction<CreateArtistParams>) {
     );
 
     yield put(createArtistSuccess(artist));
-  } catch (e) {
+  } catch (e: any) {
     if (e instanceof AxiosError) {
       yield put(createArtistError(e.response?.data?.message || e.message));
+    } else {
+      // handle generic errors (e.g., missing token)
+      yield put(createArtistError(e?.message || "Failed to create artist"));
     }
   }
 }
@@ -44,9 +47,11 @@ function* getArtists() {
     );
 
     yield put(getArtistsSuccess(artists));
-  } catch (e) {
+  } catch (e: any) {
     if (e instanceof AxiosError) {
       yield put(getArtistsError(e.response?.data?.message || e.message));
+    } else {
+      yield put(getArtistsError(e?.message || "Failed to fetch artists"));
     }
   }
 }

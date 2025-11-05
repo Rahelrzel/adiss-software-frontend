@@ -1,85 +1,65 @@
-// components/ui/PopupModal.tsx
-
+// src/components/ui/PopupModal.tsx
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import styled from "@emotion/styled";
-import type { ReactNode } from "react";
 
-interface PopupModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: ReactNode;
-  width?: string;
-  height?: string;
-}
-
-const Overlay = styled.div<{ isOpen: boolean }>`
-  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+const Overlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 50;
 `;
 
-const ModalWrapper = styled.div<{ width?: string; height?: string }>`
-  background-color: #1e1e1e;
+const ModalContainer = styled(motion.div)`
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
   padding: 20px;
-  border-radius: 16px;
-  width: ${({ width }) => width || "400px"};
-  height: ${({ height }) => height || "auto"};
-  max-height: 90%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 `;
 
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+const Header = styled.h3`
+  font-size: 1.4rem;
   color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
+  margin-bottom: 10px;
 `;
 
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-`;
+type PopupModalProps = {
+  isOpen: boolean;
+  title?: string;
+  onClose: () => void;
+  children: React.ReactNode;
+};
 
 const PopupModal: React.FC<PopupModalProps> = ({
   isOpen,
-  onClose,
   title,
+  onClose,
   children,
-  width,
-  height,
 }) => {
   return (
-    <Overlay isOpen={isOpen} onClick={onClose}>
-      <ModalWrapper
-        width={width}
-        height={height}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {title && (
-          <ModalHeader>
-            {title}
-            <CloseButton onClick={onClose}>&times;</CloseButton>
-          </ModalHeader>
-        )}
-        {children}
-      </ModalWrapper>
-    </Overlay>
+    <AnimatePresence>
+      {isOpen && (
+        <Overlay onClick={onClose}>
+          <ModalContainer
+            onClick={(e: React.MouseEvent<HTMLDivElement>) =>
+              e.stopPropagation()
+            }
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+          >
+            {title && <Header>{title}</Header>}
+            {children}
+          </ModalContainer>
+        </Overlay>
+      )}
+    </AnimatePresence>
   );
 };
 
