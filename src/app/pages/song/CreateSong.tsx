@@ -6,11 +6,20 @@ import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "../Auth/Auth.style";
-import { StyledForm, Text } from "./song.style";
+import {
+  StyledForm,
+  Text,
+  DropdownWrapper,
+  DropdownList,
+  DropdownItem,
+  LoadingText,
+  EmptyText,
+} from "./song.style";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
 import { createSongRequest } from "../../stores/song/songSlice";
 import { getArtistsRequest } from "../../stores/artist/artistSlice";
-import { getGenresRequest } from "../../stores/genre/genreSlice"; // ✅ make sure you have this slice
+import { getGenresRequest } from "../../stores/genre/genreSlice";
+import { getAlbumsRequest } from "../../stores/album/albumSlice"; // ✅ new import
 import { CreateSongSchema } from "./validation";
 import { Flex } from "../../components/ui/Flex.syle.tsx";
 import { BiPlus } from "react-icons/bi";
@@ -19,9 +28,12 @@ import { MdArrowDropDown } from "react-icons/md";
 const CreateSong = () => {
   const router = useNavigate();
   const dispatch = useAppDispatch();
+
   const songState = useAppSelector((state) => state.song);
   const artistState = useAppSelector((state) => state.artist);
   const genreState = useAppSelector((state) => state.genre);
+  const albumState = useAppSelector((state) => state.album); // ✅ new
+
   const hasSubmitted = useRef(false);
 
   const [artistName, setArtistName] = useState("");
@@ -30,6 +42,7 @@ const CreateSong = () => {
 
   const [showArtistDropdown, setShowArtistDropdown] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
+  const [showAlbumDropdown, setShowAlbumDropdown] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +62,6 @@ const CreateSong = () => {
     },
   });
 
-  // Redirect after successful creation
   useEffect(() => {
     if (hasSubmitted.current && !songState.loading && songState.songs) {
       router("/dashboard");
@@ -57,32 +69,30 @@ const CreateSong = () => {
     }
   }, [songState.songs, songState.loading, router]);
 
-  // Display API field errors if any
   useEffect(() => {
     if (songState.error && songState.error.field) {
       formik.setFieldError(songState.error.field, songState.error.msg);
     }
   }, [songState.error]);
 
-  // --- Fetch artists when dropdown is opened ---
   const handleArtistDropdown = () => {
-    if (!showArtistDropdown) {
-      dispatch(getArtistsRequest());
-    }
+    if (!showArtistDropdown) dispatch(getArtistsRequest());
     setShowArtistDropdown((prev) => !prev);
   };
 
-  // --- Fetch genres when dropdown is opened ---
   const handleGenreDropdown = () => {
-    if (!showGenreDropdown) {
-      dispatch(getGenresRequest());
-    }
+    if (!showGenreDropdown) dispatch(getGenresRequest());
     setShowGenreDropdown((prev) => !prev);
+  };
+
+  const handleAlbumDropdown = () => {
+    if (!showAlbumDropdown) dispatch(getAlbumsRequest());
+    setShowAlbumDropdown((prev) => !prev);
   };
 
   return (
     <Background>
-      <GlassCard width="420px" height="700px">
+      <GlassCard width="420px" height="750px">
         <Text>Create Song</Text>
         <Form onSubmit={formik.handleSubmit}>
           <StyledForm>
@@ -93,7 +103,7 @@ const CreateSong = () => {
             />
 
             {/* Artist Dropdown */}
-            <div style={{ position: "relative", width: "100%" }}>
+            <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
                   name="artistId"
@@ -117,31 +127,13 @@ const CreateSong = () => {
               </Flex>
 
               {showArtistDropdown && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "60px",
-                    left: "0",
-                    width: "250px",
-                    background: "rgba(0, 0, 0, 1)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: "8px",
-                    maxHeight: "150px",
-                    overflowY: "auto",
-                    zIndex: 100,
-                  }}
-                >
+                <DropdownList>
                   {artistState.loading ? (
-                    <div style={{ padding: "8px 12px" }}>Loading...</div>
+                    <LoadingText>Loading...</LoadingText>
                   ) : artistState.artists.length > 0 ? (
                     artistState.artists.map((artist) => (
-                      <div
+                      <DropdownItem
                         key={artist._id}
-                        style={{
-                          padding: "8px 12px",
-                          cursor: "pointer",
-                          borderBottom: "1px solid rgba(255,255,255,0.1)",
-                        }}
                         onClick={() => {
                           formik.setFieldValue("artistId", artist._id);
                           setArtistName(artist.name);
@@ -149,17 +141,17 @@ const CreateSong = () => {
                         }}
                       >
                         {artist.name}
-                      </div>
+                      </DropdownItem>
                     ))
                   ) : (
-                    <div style={{ padding: "8px 12px" }}>No artists found</div>
+                    <EmptyText>No artists found</EmptyText>
                   )}
-                </div>
+                </DropdownList>
               )}
-            </div>
+            </DropdownWrapper>
 
             {/* Genre Dropdown */}
-            <div style={{ position: "relative", width: "100%" }}>
+            <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
                   name="genres"
@@ -183,68 +175,77 @@ const CreateSong = () => {
               </Flex>
 
               {showGenreDropdown && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "60px",
-                    left: "0",
-                    width: "250px",
-                    background: "rgba(0, 0, 0, 1)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: "8px",
-                    maxHeight: "150px",
-                    overflowY: "auto",
-                    zIndex: 100,
-                  }}
-                >
+                <DropdownList>
                   {genreState.loading ? (
-                    <div style={{ padding: "8px 12px" }}>Loading...</div>
+                    <LoadingText>Loading...</LoadingText>
                   ) : genreState.genres.length > 0 ? (
                     genreState.genres.map((genre) => (
-                      <div
+                      <DropdownItem
                         key={genre._id}
-                        style={{
-                          padding: "8px 12px",
-                          cursor: "pointer",
-                          borderBottom: "1px solid rgba(255,255,255,0.1)",
-                        }}
                         onClick={() => {
-                          formik.setFieldValue("genres", [genre._id]); // store array of genre IDs
+                          formik.setFieldValue("genres", [genre._id]);
                           setGenreName(genre.name);
                           setShowGenreDropdown(false);
                         }}
                       >
                         {genre.name}
-                      </div>
+                      </DropdownItem>
                     ))
                   ) : (
-                    <div style={{ padding: "8px 12px" }}>No genres found</div>
+                    <EmptyText>No genres found</EmptyText>
                   )}
-                </div>
+                </DropdownList>
               )}
-            </div>
+            </DropdownWrapper>
 
-            <Flex direction="row" gap="10px">
-              <FormikInput
-                name="album"
-                formik={formik}
-                placeholder="Select Album"
-                readOnly
-                value={genreName}
-              />
-              <Button
-                width="50px"
-                type="button"
-                leftIcon={<MdArrowDropDown />}
-                onClick={handleGenreDropdown}
-              />
-              <Button
-                width="50px"
-                leftIcon={<BiPlus />}
-                type="button"
-                onClick={() => router("/album/create")}
-              />
-            </Flex>
+            {/* Album Dropdown */}
+            <DropdownWrapper>
+              <Flex direction="row" gap="10px">
+                <FormikInput
+                  name="albumId"
+                  formik={formik}
+                  placeholder="Select Album"
+                  readOnly
+                  value={albumName}
+                />
+                <Button
+                  width="50px"
+                  type="button"
+                  leftIcon={<MdArrowDropDown />}
+                  onClick={handleAlbumDropdown}
+                />
+                <Button
+                  width="50px"
+                  leftIcon={<BiPlus />}
+                  type="button"
+                  onClick={() => router("/album/create")}
+                />
+              </Flex>
+
+              {showAlbumDropdown && (
+                <DropdownList>
+                  {albumState.loading ? (
+                    <LoadingText>Loading...</LoadingText>
+                  ) : albumState.albums.length > 0 ? (
+                    albumState.albums.map((album) => (
+                      <DropdownItem
+                        key={album._id}
+                        onClick={() => {
+                          formik.setFieldValue("albumId", album._id);
+                          setAlbumName(album.name);
+                          setShowAlbumDropdown(false);
+                        }}
+                      >
+                        {album.name}
+                      </DropdownItem>
+                    ))
+                  ) : (
+                    <EmptyText>No albums found</EmptyText>
+                  )}
+                </DropdownList>
+              )}
+            </DropdownWrapper>
+
             <FormikInput
               name="spotifyUrl"
               formik={formik}

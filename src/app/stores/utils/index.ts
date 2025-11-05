@@ -6,7 +6,7 @@ import playlistReducer from "../playlist/playlistSlice";
 import songReducer from "../song/songSlice";
 import artistReducer from "../artist/artistSlice";
 import genreReducer from "../genre/genreSlice";
-import albumReducer from "../genre/genreSlice";
+import albumReducer from "../album/albumSlice";
 
 import { rootSaga } from "./saga";
 
