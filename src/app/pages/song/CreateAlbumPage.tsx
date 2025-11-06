@@ -1,4 +1,3 @@
-// src/features/artist/CreateArtistPage.tsx
 import React, { useRef, useEffect } from "react";
 import { useFormik } from "formik";
 import { z } from "zod";
@@ -6,24 +5,18 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
-
 import styled from "@emotion/styled";
 import Background from "../../components/Background";
 import GlassCard from "../../components/GlassCard";
-import { BiUserPlus } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createAlbumRequest } from "../../stores/album/albumSlice";
 
 const CreateAlbumSchema = toFormikValidationSchema(
   z.object({
-    // Only require the artist name in the form. We set userId from the
-    // logged-in user when submitting so the user doesn't need to fill it.
-    name: z.string().min(1, "Artist name is required"),
+    name: z.string().min(1, "Album name is required"),
     releaseYear: z.string(),
   })
 );
-
-export type CreateAlbumValues = z.infer<typeof CreateAlbumSchema>;
 
 const Form = styled.form`
   display: flex;
@@ -38,12 +31,15 @@ const Title = styled.h2`
 `;
 
 const CreateAlbumPage = () => {
-  const dispatch = useAppDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const albumState = useAppSelector((state) => state.album);
 
-  const artist = useAppSelector((state) => state.artist);
   const hasSubmitted = useRef(false);
+
+  // ✅ Get artistId from router state (passed from CreateSong page)
+  const selectedArtistId = location.state?.artistId || "";
 
   const formik = useFormik({
     initialValues: {
@@ -52,22 +48,27 @@ const CreateAlbumPage = () => {
     },
     validationSchema: CreateAlbumSchema,
     onSubmit: (values) => {
-      // include the current user's id when dispatching the request
+      if (!selectedArtistId) {
+        alert("No artist selected for this album!");
+        return;
+      }
+
       dispatch(
         createAlbumRequest({
-          releaseYear: values.releaseYear,
           name: values.name,
-          artistId: artist.artist?._id || "",
+          releaseYear: values.releaseYear,
+          artistId: selectedArtistId, // ✅ use the selected artist
         })
       );
+
       hasSubmitted.current = true;
     },
   });
 
-  // ✅ Redirect after successful creation
+  // Redirect after album creation
   useEffect(() => {
     if (hasSubmitted.current && !albumState.loading && !albumState.error) {
-      navigate("/createSong"); // go back to dashboard or song page
+      navigate("/createSong"); // go back to CreateSong page
       hasSubmitted.current = false;
     }
   }, [albumState.loading, albumState.error, navigate]);
@@ -81,7 +82,7 @@ const CreateAlbumPage = () => {
           <FormikInput
             name="releaseYear"
             formik={formik}
-            placeholder="Album name"
+            placeholder="Release year"
           />
           <Button
             width="100"
@@ -91,7 +92,7 @@ const CreateAlbumPage = () => {
             glow
             isLoading={albumState.loading}
           >
-            {albumState.loading ? "Creating..." : "Create Artist"}
+            {albumState.loading ? "Creating..." : "Create Album"}
           </Button>
         </Form>
       </GlassCard>

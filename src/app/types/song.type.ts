@@ -1,11 +1,25 @@
+export interface PopulatedArtist {
+  _id: string;
+  name: string;
+}
+
+export interface PopulatedAlbum {
+  _id: string;
+  name: string; // or "title" if your schema uses "title"
+}
+
+export interface PopulatedGenre {
+  _id: string;
+  name: string;
+}
+
 export interface SongResponse {
   _id: string;
   title: string;
-  artistId: string;
-  albumId: string;
-  genres: [];
+  artistId: string | PopulatedArtist;
+  albumId: string | PopulatedAlbum;
+  genre: (string | PopulatedGenre)[];
   spotifyUrl?: string;
-  preview_url?: string;
   image?: string;
   playlistId?: string;
   createdAt: string;

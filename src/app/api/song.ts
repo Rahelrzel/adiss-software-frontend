@@ -4,10 +4,10 @@ import type { SongResponse } from "../types/song.type";
 
 export interface CreateSongParams {
   title: string;
-  artistId: string;
-  albumId: string;
+  artistId: string; // ✅ renamed
+  albumId: string; // ✅ renamed
+  genre: string[]; // ✅ renamed + type corrected
   spotifyUrl?: string;
-  preview_url?: string;
   image?: string;
   playlistId?: string;
 }

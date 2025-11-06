@@ -34,7 +34,7 @@ export const routerConfig = createBrowserRouter([
     element: <PlaylistById />,
   },
   {
-    path: "/createSong",
+    path: "/createSong/:playlistId?",
     element: <CreateSong />,
   },
   {

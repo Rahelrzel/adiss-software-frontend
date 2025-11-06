@@ -3,7 +3,7 @@ import Background from "../../components/Background";
 import GlassCard from "../../components/GlassCard";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "../Auth/Auth.style";
 import {
@@ -26,13 +26,14 @@ import { BiPlus } from "react-icons/bi";
 import { MdArrowDropDown } from "react-icons/md";
 
 const CreateSong = () => {
+  const { playlistId } = useParams<{ playlistId: string }>();
   const router = useNavigate();
   const dispatch = useAppDispatch();
 
   const songState = useAppSelector((state) => state.song);
   const artistState = useAppSelector((state) => state.artist);
   const genreState = useAppSelector((state) => state.genre);
-  const albumState = useAppSelector((state) => state.album); // ✅ new
+  const albumState = useAppSelector((state) => state.album);
 
   const hasSubmitted = useRef(false);
 
@@ -49,15 +50,25 @@ const CreateSong = () => {
       title: "",
       artistId: "",
       albumId: "",
-      genres: [],
+      genre: [], // ✅ match backend ("genre", not "genres")
       spotifyUrl: "",
-      preview_url: "",
       image: "",
-      playlistId: "",
+      playlistId: playlistId || "",
     },
     validationSchema: CreateSongSchema,
     onSubmit: async (values) => {
-      dispatch(createSongRequest(values));
+      console.log("Submitting values:", values);
+      const payload = {
+        title: values.title,
+        artistId: values.artistId, // ✅ match backend
+        albumId: values.albumId, // ✅ match backend
+        genre: values.genre, // ✅ match backend
+        spotifyUrl: values.spotifyUrl,
+        image: values.image,
+        playlistId: values.playlistId || undefined,
+      };
+
+      dispatch(createSongRequest(payload));
       hasSubmitted.current = true;
     },
   });
@@ -75,6 +86,7 @@ const CreateSong = () => {
     }
   }, [songState.error]);
 
+  // Dropdown togglers
   const handleArtistDropdown = () => {
     if (!showArtistDropdown) dispatch(getArtistsRequest());
     setShowArtistDropdown((prev) => !prev);
@@ -92,7 +104,7 @@ const CreateSong = () => {
 
   return (
     <Background>
-      <GlassCard width="420px" height="750px">
+      <GlassCard width="420px" height="780px">
         <Text>Create Song</Text>
         <Form onSubmit={formik.handleSubmit}>
           <StyledForm>
@@ -102,7 +114,7 @@ const CreateSong = () => {
               placeholder="Song title"
             />
 
-            {/* Artist Dropdown */}
+            {/* 🎤 Artist Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -150,11 +162,11 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* Genre Dropdown */}
+            {/* 🎶 Genre Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
-                  name="genres"
+                  name="genre"
                   formik={formik}
                   placeholder="Select Genre"
                   readOnly
@@ -183,7 +195,7 @@ const CreateSong = () => {
                       <DropdownItem
                         key={genre._id}
                         onClick={() => {
-                          formik.setFieldValue("genres", [genre._id]);
+                          formik.setFieldValue("genre", [genre._id]);
                           setGenreName(genre.name);
                           setShowGenreDropdown(false);
                         }}
@@ -198,7 +210,7 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* Album Dropdown */}
+            {/* 💿 Album Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -218,7 +230,11 @@ const CreateSong = () => {
                   width="50px"
                   leftIcon={<BiPlus />}
                   type="button"
-                  onClick={() => router("/album/create")}
+                  onClick={() =>
+                    router("/album/create", {
+                      state: { artistId: formik.values.artistId },
+                    })
+                  }
                 />
               </Flex>
 
@@ -251,11 +267,7 @@ const CreateSong = () => {
               formik={formik}
               placeholder="Spotify URL"
             />
-            <FormikInput
-              name="preview_url"
-              formik={formik}
-              placeholder="Preview URL"
-            />
+
             <FormikInput name="image" formik={formik} placeholder="Image URL" />
 
             <Button

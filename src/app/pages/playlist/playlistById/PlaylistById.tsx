@@ -13,6 +13,7 @@ const PlaylistById = () => {
   const router = useNavigate();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
+  const genreState = useAppSelector((state) => state.genre);
   const { currentPlaylist: playlist, loading } = useAppSelector(
     (state) => state.playlist
   );
@@ -58,17 +59,50 @@ const PlaylistById = () => {
               <p style={{ color: "white" }}>
                 Songs: {playlist.songs?.length || 0}
               </p>
-              <Button onClick={() => router("/createSong")}>Add song</Button>
+              <Button onClick={() => router(`/createSong/${playlist._id}`)}>
+                Add song
+              </Button>
             </Flex>
           </Flex>
-
           <Flex direction="column" gap="15px">
             {playlist.songs?.map((song) => (
-              <Flex key={song._id} direction="row" gap="30px" align="center">
-                <SongCard image={"/src/assets/default-song.png"} />
+              <Flex
+                key={song._id}
+                direction="row"
+                gap="30px"
+                align="center"
+                style={{ cursor: song.spotifyUrl ? "pointer" : "default" }}
+                onClick={() => {
+                  if (song.spotifyUrl) window.open(song.spotifyUrl, "_blank");
+                }}
+              >
+                <SongCard image={song.image || "/src/assets/theGirl.jpg"} />
+
                 <Flex direction="column">
                   <div style={{ color: "white" }}>{song.title}</div>
-                  <div style={{ color: "#ccc" }}>{song.artistId}</div>
+                  <div style={{ color: "#ccc" }}>
+                    {typeof song.artistId === "string"
+                      ? "Unknown"
+                      : song.artistId.name}
+                  </div>
+                </Flex>
+
+                <Flex direction="column">
+                  <div>Album</div>
+                  <div style={{ color: "#ccc" }}>
+                    {typeof song.albumId === "string"
+                      ? "Unknown"
+                      : song.albumId.name}
+                  </div>
+                </Flex>
+
+                <Flex direction="column">
+                  <div>Genre</div>
+                  <div style={{ color: "#ccc" }}>
+                    {song.genre
+                      .map((g) => (typeof g === "string" ? "Unknown" : g.name))
+                      .join(", ") || "Unknown"}
+                  </div>
                 </Flex>
               </Flex>
             ))}

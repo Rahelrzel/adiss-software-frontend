@@ -15,6 +15,7 @@ import {
   watchFetchSong,
   watchGetSongById,
 } from "../song/songSaga";
+import { spotifySaga } from "../spotify/spotifySaga";
 
 export function* rootSaga() {
   yield all([
@@ -31,5 +32,6 @@ export function* rootSaga() {
     watchFetchSong(),
     watchCreateSong(),
     watchGetSongById(),
+    spotifySaga(),
   ]);
 }

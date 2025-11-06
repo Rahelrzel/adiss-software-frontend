@@ -21,6 +21,7 @@ import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
 import { fetchPlaylistsRequest } from "../../stores/playlist/playlistSlice";
+import SpotifySearch from "../../components/spotifySearch";
 
 const Dashboard = () => {
   const route = useNavigate();
@@ -39,6 +40,14 @@ const Dashboard = () => {
   return (
     <Background>
       <Main>
+        <div
+          style={{ padding: "20px", background: "#000", minHeight: "100vh" }}
+        >
+          <h2 style={{ color: "#fff", marginBottom: "20px" }}>
+            Search Spotify Tracks
+          </h2>
+          <SpotifySearch />
+        </div>
         <GlassCard width="300px" height="600px">
           <Sidebar>
             <Logo>Addis ሙዚቃ</Logo>
