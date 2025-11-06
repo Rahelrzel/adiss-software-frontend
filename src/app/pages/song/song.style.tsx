@@ -22,7 +22,7 @@ export const DropdownWrapper = styled.div`
 
 export const DropdownList = styled.div`
   position: absolute;
-  top: 60px;
+  top: 0px;
   left: 0;
   width: 250px;
   background: rgba(0, 0, 0, 1);

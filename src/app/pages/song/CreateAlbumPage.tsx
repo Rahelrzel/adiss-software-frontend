@@ -1,55 +1,76 @@
 import React, { useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useFormik } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import styled from "@emotion/styled";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
-import styled from "@emotion/styled";
-import Background from "../../components/Background";
-import GlassCard from "../../components/GlassCard";
-import { useNavigate, useLocation } from "react-router-dom";
 import { createAlbumRequest } from "../../stores/album/albumSlice";
 
 const CreateAlbumSchema = toFormikValidationSchema(
   z.object({
     name: z.string().min(1, "Album name is required"),
-    releaseYear: z.string(),
+    releaseYear: z.string().optional(),
   })
 );
 
-const Form = styled.form`
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+`;
+
+const ModalCard = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  width: 380px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 `;
 
 const Title = styled.h2`
   text-align: center;
-  margin-bottom: 10px;
-  color: white;
+  margin-bottom: 20px;
 `;
 
-const CreateAlbumPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+interface CreateAlbumModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  artistId: string;
+}
+
+const CreateAlbumModal: React.FC<CreateAlbumModalProps> = ({
+  isOpen,
+  onClose,
+  artistId,
+}) => {
   const dispatch = useAppDispatch();
   const albumState = useAppSelector((state) => state.album);
-
   const hasSubmitted = useRef(false);
 
-  // ✅ Get artistId from router state (passed from CreateSong page)
-  const selectedArtistId = location.state?.artistId || "";
-
   const formik = useFormik({
-    initialValues: {
-      name: "",
-      releaseYear: "",
-    },
+    initialValues: { name: "", releaseYear: "" },
     validationSchema: CreateAlbumSchema,
     onSubmit: (values) => {
-      if (!selectedArtistId) {
-        alert("No artist selected for this album!");
+      if (!artistId) {
+        alert("No artist selected!");
         return;
       }
 
@@ -57,7 +78,7 @@ const CreateAlbumPage = () => {
         createAlbumRequest({
           name: values.name,
           releaseYear: values.releaseYear,
-          artistId: selectedArtistId, // ✅ use the selected artist
+          artistId,
         })
       );
 
@@ -65,17 +86,18 @@ const CreateAlbumPage = () => {
     },
   });
 
-  // Redirect after album creation
   useEffect(() => {
     if (hasSubmitted.current && !albumState.loading && !albumState.error) {
-      navigate("/createSong"); // go back to CreateSong page
+      onClose();
       hasSubmitted.current = false;
     }
-  }, [albumState.loading, albumState.error, navigate]);
+  }, [albumState.loading, albumState.error, onClose]);
 
-  return (
-    <Background>
-      <GlassCard width="400px" height="400px">
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(
+    <Overlay onClick={onClose}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
         <Title>Create Album</Title>
         <Form onSubmit={formik.handleSubmit}>
           <FormikInput name="name" formik={formik} placeholder="Album name" />
@@ -85,8 +107,8 @@ const CreateAlbumPage = () => {
             placeholder="Release year"
           />
           <Button
-            width="100"
             type="submit"
+            width="100%"
             colorScheme="white"
             shape="round"
             glow
@@ -95,9 +117,19 @@ const CreateAlbumPage = () => {
             {albumState.loading ? "Creating..." : "Create Album"}
           </Button>
         </Form>
-      </GlassCard>
-    </Background>
+        <Button
+          type="button"
+          width="100%"
+          shape="round"
+          style={{ marginTop: "10px" }}
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+      </ModalCard>
+    </Overlay>,
+    document.body
   );
 };
 
-export default CreateAlbumPage;
+export default CreateAlbumModal;

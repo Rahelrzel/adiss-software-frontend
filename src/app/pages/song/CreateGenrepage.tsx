@@ -1,77 +1,95 @@
-// src/features/artist/CreateArtistPage.tsx
+// src/features/genre/CreateGenreModal.tsx
 import React, { useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useFormik } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
-import { createArtistRequest } from "../../stores/artist/artistSlice";
-import styled from "@emotion/styled";
-import Background from "../../components/Background";
-import GlassCard from "../../components/GlassCard";
-import { BiUserPlus } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
 import { createGenreRequest } from "../../stores/genre/genreSlice";
+import styled from "@emotion/styled";
 
 const CreateGenreSchema = toFormikValidationSchema(
   z.object({
-    // Only require the artist name in the form. We set userId from the
-    // logged-in user when submitting so the user doesn't need to fill it.
-    name: z.string().min(1, "Artist name is required"),
+    name: z.string().min(1, "Genre name is required"),
   })
 );
 
-export type CreateGenreValues = z.infer<typeof CreateGenreSchema>;
-
-const Form = styled.form`
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+`;
+
+const ModalCard = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  width: 380px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 `;
 
 const Title = styled.h2`
   text-align: center;
-  margin-bottom: 10px;
-  color: white;
+  margin-bottom: 20px;
 `;
 
-const CreateGenrePage = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const genreState = useAppSelector((state) => state.genre);
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
 
+interface CreateGenreModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const CreateGenreModal: React.FC<CreateGenreModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const dispatch = useAppDispatch();
+  const genreState = useAppSelector((state) => state.genre);
   const hasSubmitted = useRef(false);
 
   const formik = useFormik({
-    initialValues: {
-      name: "",
-    },
+    initialValues: { name: "" },
     validationSchema: CreateGenreSchema,
     onSubmit: (values) => {
-      // include the current user's id when dispatching the request
       dispatch(createGenreRequest({ name: values.name }));
       hasSubmitted.current = true;
     },
   });
 
-  // ✅ Redirect after successful creation
   useEffect(() => {
     if (hasSubmitted.current && !genreState.loading && !genreState.error) {
-      navigate("/createSong"); // go back to dashboard or song page
+      onClose();
       hasSubmitted.current = false;
     }
-  }, [genreState.loading, genreState.error, navigate]);
+  }, [genreState.loading, genreState.error, onClose]);
 
-  return (
-    <Background>
-      <GlassCard width="400px" height="400px">
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(
+    <Overlay onClick={onClose}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
         <Title>Create Genre</Title>
         <Form onSubmit={formik.handleSubmit}>
           <FormikInput name="name" formik={formik} placeholder="Genre name" />
 
           <Button
-            width="100"
+            width="100%"
             type="submit"
             colorScheme="white"
             shape="round"
@@ -81,9 +99,20 @@ const CreateGenrePage = () => {
             {genreState.loading ? "Creating..." : "Create Genre"}
           </Button>
         </Form>
-      </GlassCard>
-    </Background>
+
+        <Button
+          width="100%"
+          type="button"
+          shape="round"
+          style={{ marginTop: "10px" }}
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+      </ModalCard>
+    </Overlay>,
+    document.body
   );
 };
 
-export default CreateGenrePage;
+export default CreateGenreModal;

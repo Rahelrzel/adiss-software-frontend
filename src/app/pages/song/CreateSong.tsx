@@ -24,8 +24,16 @@ import { CreateSongSchema } from "./validation";
 import { Flex } from "../../components/ui/Flex.syle.tsx";
 import { BiPlus } from "react-icons/bi";
 import { MdArrowDropDown } from "react-icons/md";
+import CreateAlbumModal from "./CreateAlbumPage.tsx";
+import CreateArtistModal from "./CreateArtistPage.tsx";
+import CreateGenreModal from "./CreateGenrepage.tsx";
 
 const CreateSong = () => {
+  const [isAlbumModalOpen, setAlbumModalOpen] = useState(false);
+  const [selectedArtistId, setSelectedArtistId] = useState("");
+  const [isArtistModalOpen, setArtistModalOpen] = useState(false);
+  const [isGenreModalOpen, setGenreModalOpen] = useState(false);
+
   const { playlistId } = useParams<{ playlistId: string }>();
   const router = useNavigate();
   const dispatch = useAppDispatch();
@@ -130,11 +138,16 @@ const CreateSong = () => {
                   leftIcon={<MdArrowDropDown />}
                   onClick={handleArtistDropdown}
                 />
+
                 <Button
                   width="50px"
+                  onClick={() => setArtistModalOpen(true)}
                   leftIcon={<BiPlus />}
-                  type="button"
-                  onClick={() => router("/artist/create")}
+                />
+
+                <CreateArtistModal
+                  isOpen={isArtistModalOpen}
+                  onClose={() => setArtistModalOpen(false)}
                 />
               </Flex>
 
@@ -149,6 +162,7 @@ const CreateSong = () => {
                         onClick={() => {
                           formik.setFieldValue("artistId", artist._id);
                           setArtistName(artist.name);
+                          setSelectedArtistId(artist._id);
                           setShowArtistDropdown(false);
                         }}
                       >
@@ -178,11 +192,16 @@ const CreateSong = () => {
                   leftIcon={<MdArrowDropDown />}
                   onClick={handleGenreDropdown}
                 />
+
                 <Button
                   width="50px"
+                  onClick={() => setGenreModalOpen(true)}
                   leftIcon={<BiPlus />}
-                  type="button"
-                  onClick={() => router("/genre/create")}
+                />
+
+                <CreateGenreModal
+                  isOpen={isGenreModalOpen}
+                  onClose={() => setGenreModalOpen(false)}
                 />
               </Flex>
 
@@ -226,15 +245,23 @@ const CreateSong = () => {
                   leftIcon={<MdArrowDropDown />}
                   onClick={handleAlbumDropdown}
                 />
+
                 <Button
                   width="50px"
+                  onClick={() => {
+                    if (!selectedArtistId) {
+                      alert("Please select an artist first!");
+                      return;
+                    }
+                    setAlbumModalOpen(true);
+                  }}
                   leftIcon={<BiPlus />}
-                  type="button"
-                  onClick={() =>
-                    router("/album/create", {
-                      state: { artistId: formik.values.artistId },
-                    })
-                  }
+                />
+
+                <CreateAlbumModal
+                  isOpen={isAlbumModalOpen}
+                  onClose={() => setAlbumModalOpen(false)}
+                  artistId={selectedArtistId}
                 />
               </Flex>
 
