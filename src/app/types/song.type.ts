@@ -5,7 +5,7 @@ export interface PopulatedArtist {
 
 export interface PopulatedAlbum {
   _id: string;
-  name: string; // or "title" if your schema uses "title"
+  name: string;
 }
 
 export interface PopulatedGenre {

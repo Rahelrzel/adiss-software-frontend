@@ -4,13 +4,13 @@ export const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 4rem;
+  padding: 3rem 6rem;
   position: relative;
   z-index: 10;
 `;
 
 export const Logo = styled.div`
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: white;
   letter-spacing: -0.5px;
@@ -38,7 +38,7 @@ export const MainContent = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
-  padding: 4rem;
+px:3rem 
   max-width: 1400px;
   margin: 0 auto;
   position: relative;

@@ -16,6 +16,7 @@ import {
   watchGetSongById,
 } from "../song/songSaga";
 import { spotifySaga } from "../spotify/spotifySaga";
+import { statSaga } from "../stat/stat.saga";
 
 export function* rootSaga() {
   yield all([
@@ -33,5 +34,6 @@ export function* rootSaga() {
     watchCreateSong(),
     watchGetSongById(),
     spotifySaga(),
+    statSaga(),
   ]);
 }

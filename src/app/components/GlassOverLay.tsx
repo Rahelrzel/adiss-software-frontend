@@ -11,7 +11,6 @@ function GlassOverlay({ children }: GlassOverlayProps) {
 
 export default GlassOverlay;
 
-// Styled Component
 const OverlayContainer = styled.div`
   position: absolute;
   top: 0;

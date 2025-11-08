@@ -1,4 +1,3 @@
-// src/features/artist/CreateArtistModal.tsx
 import React, { useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useFormik } from "formik";

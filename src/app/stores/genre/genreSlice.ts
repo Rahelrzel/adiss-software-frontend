@@ -21,7 +21,6 @@ const genreSlice = createSlice({
   name: "genre",
   initialState,
   reducers: {
-    // --- Create Genre ---
     createGenreRequest: (state, _action: PayloadAction<CreateGenreParams>) => {
       state.loading = true;
       state.error = null;
@@ -35,7 +34,6 @@ const genreSlice = createSlice({
       state.error = action.payload ?? "Failed to create genre";
     },
 
-    // --- Get All Genres ---
     getGenresRequest: (state) => {
       state.loading = true;
       state.error = null;

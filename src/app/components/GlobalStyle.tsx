@@ -1,5 +1,3 @@
-// $config/Theme/GlobalStyle.ts
-
 import { fonts } from "../../config/theme/fonts";
 import { css } from "@emotion/react";
 

@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import Background from "../../components/Background";
+
 import GlassCard from "../../components/GlassCard";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
@@ -27,6 +27,7 @@ import { MdArrowDropDown } from "react-icons/md";
 import CreateAlbumModal from "./CreateAlbumPage.tsx";
 import CreateArtistModal from "./CreateArtistPage.tsx";
 import CreateGenreModal from "./CreateGenrepage.tsx";
+import SpotifySearch from "./SpotifySeach.tsx";
 
 const CreateSong = () => {
   const [isAlbumModalOpen, setAlbumModalOpen] = useState(false);
@@ -58,7 +59,7 @@ const CreateSong = () => {
       title: "",
       artistId: "",
       albumId: "",
-      genre: [], // ✅ match backend ("genre", not "genres")
+      genre: [],
       spotifyUrl: "",
       image: "",
       playlistId: playlistId || "",
@@ -68,9 +69,9 @@ const CreateSong = () => {
       console.log("Submitting values:", values);
       const payload = {
         title: values.title,
-        artistId: values.artistId, // ✅ match backend
-        albumId: values.albumId, // ✅ match backend
-        genre: values.genre, // ✅ match backend
+        artistId: values.artistId,
+        albumId: values.albumId,
+        genre: values.genre,
         spotifyUrl: values.spotifyUrl,
         image: values.image,
         playlistId: values.playlistId || undefined,
@@ -111,9 +112,9 @@ const CreateSong = () => {
   };
 
   return (
-    <Background>
-      <GlassCard width="420px" height="780px">
-        <Text>Create Song</Text>
+    <Flex direction="row">
+      <GlassCard width="600px" height="500px">
+        <Text>Create Song</Text>{" "}
         <Form onSubmit={formik.handleSubmit}>
           <StyledForm>
             <FormikInput
@@ -229,7 +230,6 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* 💿 Album Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -310,7 +310,16 @@ const CreateSong = () => {
           </StyledForm>
         </Form>
       </GlassCard>
-    </Background>
+      <GlassCard width="300px">
+        <SpotifySearch
+          onSelectTrack={(track) => {
+            formik.setFieldValue("title", track.title);
+            formik.setFieldValue("spotifyUrl", track.spotifyUrl);
+            formik.setFieldValue("image", track.image);
+          }}
+        />
+      </GlassCard>
+    </Flex>
   );
 };
 

@@ -12,7 +12,6 @@ import {
 } from "./albumSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// --- Create Album ---
 function* createAlbum(action: PayloadAction<CreateAlbumParams>) {
   try {
     const token = localStorage.getItem("token");
@@ -32,7 +31,6 @@ function* createAlbum(action: PayloadAction<CreateAlbumParams>) {
   }
 }
 
-// --- Get All Albums ---
 function* getAlbums() {
   try {
     const token = localStorage.getItem("token");
@@ -51,7 +49,6 @@ function* getAlbums() {
   }
 }
 
-// --- Watchers ---
 export function* albumSaga() {
   yield takeEvery(createAlbumRequest.type, createAlbum);
   yield takeEvery(getAlbumsRequest.type, getAlbums);

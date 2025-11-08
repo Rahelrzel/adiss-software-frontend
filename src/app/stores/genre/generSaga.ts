@@ -13,7 +13,7 @@ import {
 
 import genreApi, { type CreateGenreParams } from "../../api/genre";
 import type { PayloadAction } from "@reduxjs/toolkit";
-// --- Create Genre ---
+
 function* createGenre(action: PayloadAction<CreateGenreParams>) {
   try {
     const token = localStorage.getItem("token");
@@ -33,7 +33,6 @@ function* createGenre(action: PayloadAction<CreateGenreParams>) {
   }
 }
 
-// --- Get All Genres ---
 function* getGenres() {
   try {
     const token = localStorage.getItem("token");
@@ -52,7 +51,6 @@ function* getGenres() {
   }
 }
 
-// --- Watchers ---
 export function* genreSaga() {
   yield takeEvery(createGenreRequest.type, createGenre);
   yield takeEvery(getGenresRequest.type, getGenres);

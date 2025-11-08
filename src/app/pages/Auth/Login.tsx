@@ -84,7 +84,7 @@ const LoginPage = () => {
           </Form>
 
           <SecondaryText>
-            Don’t have an account? <Linked href="/signup">Sign up</Linked>
+            Don’t have an account? <Linked href="/register">Sign up</Linked>
           </SecondaryText>
         </FormRow>
       </GlassCard>

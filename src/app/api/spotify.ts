@@ -1,29 +1,23 @@
 import axios from "axios";
 import { apiUrl, authHeader } from "../../config/api";
 
-// Type for Spotify track (based on your backend response)
 export interface SpotifyTrack {
   id: string;
-  name: string;
+  title: string;
   artist: string;
   album: string;
   preview_url?: string | null;
   image?: string;
   external_url: string;
   genre?: string;
+  spotifyUrl: string;
 }
 
-// Response type
 export interface SpotifySearchResponse {
   success: boolean;
   data: SpotifyTrack[];
 }
 
-/**
- * Search tracks on Spotify
- * @param query The search query (song title, artist, etc.)
- * @param token Auth token if needed (optional)
- */
 const searchTracks = async (query: string, token?: string) => {
   if (!query.trim()) {
     return { success: false, data: [] };

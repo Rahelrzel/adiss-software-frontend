@@ -4,9 +4,9 @@ import type { SongResponse } from "../types/song.type";
 
 export interface CreateSongParams {
   title: string;
-  artistId: string; // ✅ renamed
-  albumId: string; // ✅ renamed
-  genre: string[]; // ✅ renamed + type corrected
+  artistId: string;
+  albumId: string;
+  genre: string[];
   spotifyUrl?: string;
   image?: string;
   playlistId?: string;

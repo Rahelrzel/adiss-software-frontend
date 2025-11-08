@@ -1,5 +1,3 @@
-// src/app/stores/user/userSlice.ts
-
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { LoginParameters, SignupParameters } from "../../api/user";
 import type { ErrorResponse, UserResponse } from "../../types/user.type";
@@ -20,7 +18,6 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // LOGIN
     loginRequest: (state, _action: PayloadAction<LoginParameters>) => {
       state.loading = true;
       state.error = undefined;
@@ -35,7 +32,6 @@ const userSlice = createSlice({
       state.loading = false;
     },
 
-    // SIGNUP
     signUpRequest: (state, _action: PayloadAction<SignupParameters>) => {
       state.loading = true;
       state.error = undefined;

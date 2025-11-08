@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { colors } from "../../../config/theme/color";
 
-// Generic text styles (no colors or font sizes hardcoded)
 export const Header = styled.h1<{ size?: string; weight?: string }>(
   ({ size = "2em", weight = "700" }) => ({
     fontSize: size,
@@ -36,8 +35,8 @@ export const TextLink = styled(Link)<{ underline?: boolean }>(
 export const InputGroup = styled.div({
   display: "flex",
   flexDirection: "column",
-  gap: "10px", // space between username & password
-  marginBottom: "50px", // 👈 space before the button
+  gap: "10px",
+  marginBottom: "50px",
 });
 
 export const FormRow = styled.div({
@@ -57,7 +56,7 @@ export const SecondaryText = styled.p({
 });
 
 export const Linked = styled.a({
-  color: colors.white, // blue tone, matches your theme
+  color: colors.white,
   fontWeight: "500",
   textDecoration: "none",
   marginLeft: "4px",

@@ -8,7 +8,6 @@ import type {
 } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 
-// ✅ Available color schemes
 const colorSchemes = {
   white: {
     background: "#ffffffff",
@@ -32,7 +31,6 @@ const colorSchemes = {
   },
 };
 
-// ✅ Available button shapes
 const shapeToBorderRadius = {
   round: "50px",
   circle: "100%",
@@ -54,7 +52,6 @@ interface ButtonProps
   height?: string;
 }
 
-// ✅ Button component
 export const Button: FC<ButtonProps> = ({
   children,
   leftIcon,
@@ -90,7 +87,6 @@ export const Button: FC<ButtonProps> = ({
   );
 };
 
-// ✅ Styled Components
 const ButtonContainer = styled.button<ButtonProps>`
   display: flex;
   align-items: center;
@@ -132,7 +128,6 @@ const IconWrapper = styled.span`
   font-size: 1.2em;
 `;
 
-// ✅ Spinner animation
 const spin = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

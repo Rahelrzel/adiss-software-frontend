@@ -92,10 +92,6 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({
 
 export default PlaylistCard;
 
-// =======================
-// Styled Components
-// =======================
-
 const Card = styled.div`
   position: relative;
   width: 220px;
@@ -165,7 +161,7 @@ export const Main = styled.div`
   display: flex;
   flex-direction: row;
   gap: 20px;
-  max-height: 100vh; /* full viewport height */
-  overflow-y: auto; /* scroll when content overflows */
+  max-height: 100vh;
+  overflow-y: auto;
   padding: 20px;
 `;

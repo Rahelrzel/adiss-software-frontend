@@ -17,7 +17,6 @@ function GlassCard({
 
 export default GlassCard;
 
-// Styled Component
 const CardContainer = styled.div`
   position: relative;
   backdrop-filter: blur(15px);

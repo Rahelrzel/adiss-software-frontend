@@ -12,7 +12,6 @@ import {
 } from "./artistSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// --- Create Artist ---
 function* createArtist(action: PayloadAction<CreateArtistParams>) {
   try {
     const token = localStorage.getItem("token");
@@ -29,13 +28,11 @@ function* createArtist(action: PayloadAction<CreateArtistParams>) {
     if (e instanceof AxiosError) {
       yield put(createArtistError(e.response?.data?.message || e.message));
     } else {
-      // handle generic errors (e.g., missing token)
       yield put(createArtistError(e?.message || "Failed to create artist"));
     }
   }
 }
 
-// --- Get All Artists ---
 function* getArtists() {
   try {
     const token = localStorage.getItem("token");
@@ -56,7 +53,6 @@ function* getArtists() {
   }
 }
 
-// --- Watchers ---
 export function* artistSaga() {
   yield takeEvery(createArtistRequest.type, createArtist);
   yield takeEvery(getArtistsRequest.type, getArtists);

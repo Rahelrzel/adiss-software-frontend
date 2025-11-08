@@ -39,7 +39,7 @@ const CreatePlaylist = () => {
   useEffect(() => {
     if (hasSubmitted.current && playlist.playlist && !playlist.loading) {
       router("/dashboard");
-      hasSubmitted.current = false; // reset after redirect
+      hasSubmitted.current = false;
     }
   }, [playlist.playlist, playlist.loading, router]);
   useEffect(() => {

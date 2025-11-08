@@ -19,7 +19,6 @@ const spotifySlice = createSlice({
   name: "spotify",
   initialState,
   reducers: {
-    // --- Search Tracks ---
     searchTracksRequest: (state, action: PayloadAction<string>) => {
       state.loading = true;
       state.error = null;
@@ -34,7 +33,6 @@ const spotifySlice = createSlice({
       state.error = action.payload ?? "Failed to search tracks";
     },
 
-    // Optional: clear previous results
     clearSpotifyResults: (state) => {
       state.tracks = [];
       state.query = "";

@@ -8,6 +8,7 @@ import artistReducer from "../artist/artistSlice";
 import genreReducer from "../genre/genreSlice";
 import albumReducer from "../album/albumSlice";
 import spotifyReducer from "../spotify/spotifySlice";
+import statReducer from "../stat/statSlice";
 
 import { rootSaga } from "./saga";
 
@@ -26,6 +27,7 @@ const store = configureStore({
     genre: genreReducer,
     album: albumReducer,
     spotify: spotifyReducer,
+    stat: statReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

@@ -21,7 +21,6 @@ const artistSlice = createSlice({
   name: "artist",
   initialState,
   reducers: {
-    // --- Create Artist ---
     createArtistRequest: (
       state,
       _action: PayloadAction<CreateArtistParams>
@@ -38,7 +37,6 @@ const artistSlice = createSlice({
       state.error = action.payload ?? "Failed to create artist";
     },
 
-    // --- Get All Artists ---
     getArtistsRequest: (state) => {
       state.loading = true;
       state.error = null;

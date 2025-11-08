@@ -1,4 +1,3 @@
-// src/features/genre/CreateGenreModal.tsx
 import React, { useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useFormik } from "formik";

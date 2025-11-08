@@ -39,7 +39,7 @@ const Register = () => {
 
   useEffect(() => {
     if (user.user) {
-      route("/dashboard");
+      route("/login");
     }
   }, [user.user]);
 
@@ -91,7 +91,7 @@ const Register = () => {
               signup
             </Button>
             <SecondaryText>
-              Already Have An Account <Linked href="/signup">Login</Linked>
+              Already Have An Account <Linked href="/login">Login</Linked>
             </SecondaryText>
           </Form>
         </FormRow>

@@ -17,7 +17,6 @@ function Background({ children }: BackgroundProps) {
 
 export default Background;
 
-// ✅ Styled Components
 const BackgroundWrapper = styled.div`
   position: fixed; /* key: covers full viewport */
   top: 0;

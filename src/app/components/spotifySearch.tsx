@@ -1,18 +1,16 @@
-/** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from "react";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../stores/utils/hooks";
 import { searchTracksRequest } from "../stores/spotify/spotifySlice";
 
-// 🎨 Styles
-const container = css`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
 `;
 
-const inputStyle = css`
+const Input = styled.input`
   padding: 10px 14px;
   border: 1px solid #333;
   border-radius: 10px;
@@ -21,12 +19,13 @@ const inputStyle = css`
   color: #fff;
   outline: none;
   transition: border-color 0.3s;
+
   &:focus {
     border-color: #1db954;
   }
 `;
 
-const trackList = css`
+const TrackList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -35,7 +34,7 @@ const trackList = css`
   margin-top: 5px;
 `;
 
-const trackItem = css`
+const TrackItem = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -44,25 +43,26 @@ const trackItem = css`
   background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: background 0.3s ease;
+
   &:hover {
     background: rgba(255, 255, 255, 0.12);
   }
 `;
 
-const imageStyle = css`
+const TrackImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 6px;
   object-fit: cover;
 `;
 
-const textWrap = css`
+const TextWrap = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
 `;
 
-const title = css`
+const Title = styled.span`
   font-size: 15px;
   font-weight: 600;
   color: #fff;
@@ -71,19 +71,18 @@ const title = css`
   text-overflow: ellipsis;
 `;
 
-const artist = css`
+const Artist = styled.span`
   font-size: 13px;
   color: #aaa;
 `;
 
-const message = css`
+const Message = styled.p`
   color: #aaa;
   font-size: 14px;
   text-align: center;
   margin-top: 10px;
 `;
 
-// 🎧 Component
 const SpotifySearch: React.FC = () => {
   const dispatch = useAppDispatch();
   const spotifyState = useAppSelector((state) => state.spotify);
@@ -91,7 +90,6 @@ const SpotifySearch: React.FC = () => {
 
   const [query, setQuery] = useState("");
 
-  // 🔍 Debounce search (trigger after user stops typing for 500ms)
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (query.trim().length > 1) {
@@ -103,34 +101,33 @@ const SpotifySearch: React.FC = () => {
   }, [query, dispatch]);
 
   return (
-    <div css={container}>
-      <input
-        css={inputStyle}
+    <Container>
+      <Input
         type="text"
         placeholder="Search songs on Spotify..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {loading && <p css={message}>Searching...</p>}
-      {error && <p css={message}>⚠️ {error}</p>}
+      {loading && <Message>Searching...</Message>}
+      {error && <Message> {error}</Message>}
 
       {!loading && tracks.length === 0 && query.length > 1 && (
-        <p css={message}>No results found.</p>
+        <Message>No results found.</Message>
       )}
 
-      <div css={trackList}>
+      <TrackList>
         {tracks.map((track) => (
-          <div key={track.id} css={trackItem}>
-            <img src={track.image} alt={track.name} css={imageStyle} />
-            <div css={textWrap}>
-              <span css={title}>{track.name}</span>
-              <span css={artist}>{track.artist}</span>
-            </div>
-          </div>
+          <TrackItem key={track.id}>
+            <TrackImage src={track.image} alt={track.title} />
+            <TextWrap>
+              <Title>{track.title}</Title>
+              <Artist>{track.artist}</Artist>
+            </TextWrap>
+          </TrackItem>
         ))}
-      </div>
-    </div>
+      </TrackList>
+    </Container>
   );
 };
 

@@ -21,7 +21,6 @@ const albumSlice = createSlice({
   name: "album",
   initialState,
   reducers: {
-    // --- Create Album ---
     createAlbumRequest: (state, _action: PayloadAction<CreateAlbumParams>) => {
       state.loading = true;
       state.error = null;
@@ -35,7 +34,6 @@ const albumSlice = createSlice({
       state.error = action.payload ?? "Failed to create album";
     },
 
-    // --- Get All Albums ---
     getAlbumsRequest: (state) => {
       state.loading = true;
       state.error = null;

@@ -1,4 +1,3 @@
-import React from "react";
 import Background from "../../components/Background";
 
 import {
@@ -24,12 +23,19 @@ import {
   RectangleWrapper,
   StrokeDiv,
 } from "./Landing.style";
-import { Linked } from "../Auth/Auth.style";
-
 import GlassOverlay from "../../components/GlassOverLay";
 import { Button } from "../../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const route = useNavigate();
+
+  const handleClickRegister = () => {
+    route("/register");
+  };
+  const handleClickLogin = () => {
+    route("/login");
+  };
   return (
     <Background>
       <GlassOverlay>
@@ -37,11 +43,16 @@ const Landing = () => {
         <Header>
           <Logo>Addis ሙዚቃ</Logo>
           <Nav>
-            <Linked href="#home">Home</Linked>
-            <Linked href="#about">About</Linked>
-            <Linked href="#services">services</Linked>
-            <Linked href="#register">Register</Linked>
-            <Button variant="primary">Login</Button>
+            <Button shape="round" onClick={() => handleClickRegister()}>
+              register
+            </Button>
+            <Button
+              shape="round"
+              onClick={() => handleClickLogin()}
+              colorScheme="white"
+            >
+              Login
+            </Button>
           </Nav>
         </Header>
         <MainContent>
@@ -54,11 +65,20 @@ const Landing = () => {
             </Description>
 
             <ButtonGroup>
-              <Button width="250px" variant="primary">
-                Login
+              <Button
+                shape="round"
+                onClick={() => handleClickLogin()}
+                colorScheme="white"
+                width="250px"
+              >
+                Play The Music
               </Button>
-              <Button width="250px" variant="secondary">
-                Login
+              <Button
+                shape="round"
+                onClick={() => handleClickRegister()}
+                width="250px"
+              >
+                Discover
               </Button>
             </ButtonGroup>
 

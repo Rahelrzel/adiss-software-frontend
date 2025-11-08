@@ -6,47 +6,21 @@ import Dashboard from "../app/pages/Dashboard/Dashboard";
 import CreatePlaylist from "../app/pages/playlist/CreatePlaylist";
 import PlaylistById from "../app/pages/playlist/playlistById/PlaylistById";
 import CreateSong from "../app/pages/song/CreateSong";
-import CreateArtistModal from "../app/pages/song/CreateArtistPage";
-import CreateArtistPage from "../app/pages/song/CreateArtistPage";
-import CreateGenrePage from "../app/pages/song/CreateGenrepage";
-import CreateAlbumPage from "../app/pages/song/CreateAlbumPage";
+import DashboardLayout from "../app/pages/DashboardLayout";
+// ✅ use this layout
 
 export const routerConfig = createBrowserRouter([
-  {
-    path: "/",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  { path: "/landing", element: <Landing /> },
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <Register /> },
+  { path: "/", element: <Landing /> },
   {
     path: "/dashboard",
-    element: <Dashboard />,
-  },
-  {
-    path: "/createPlaylist",
-    element: <CreatePlaylist />,
-  },
-  {
-    path: "/playlist/:id",
-    element: <PlaylistById />,
-  },
-  {
-    path: "/createSong/:playlistId?",
-    element: <CreateSong />,
-  },
-  {
-    path: "/artist/create",
-    element: <CreateArtistPage />,
-  },
-  {
-    path: "/genre/create",
-    element: <CreateGenrePage />,
-  },
-  {
-    path: "/album/create",
-    element: <CreateAlbumPage />,
+    element: <DashboardLayout />, // ✅ layout with sidebar + outlet
+    children: [
+      { index: true, element: <Dashboard /> }, // /dashboard
+      { path: "playlist/:id", element: <PlaylistById /> }, // /dashboard/playlist/:id
+      { path: "createPlaylist", element: <CreatePlaylist /> },
+      { path: "createSong/:playlistId?", element: <CreateSong /> },
+    ],
   },
 ]);

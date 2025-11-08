@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import type { FC } from "react";
 
 interface InputProps {
-  inputSize?: "sm" | "md" | "lg"; // renamed from 'size'
+  inputSize?: "sm" | "md" | "lg";
   type?: string;
   placeholder?: string;
   value?: string;
@@ -108,8 +108,8 @@ const TextArea = styled.textarea<InputProps>((props) => ({
   transition: "all 0.3s ease-out",
   padding: sizeStyles[props.inputSize || "md"].padding,
   fontSize: sizeStyles[props.inputSize || "md"].fontSize,
-  resize: "vertical", // allows vertical resizing, optional
-  minHeight: "80px", // default height
+  resize: "vertical",
+  minHeight: "80px",
   "::placeholder": {
     color: "rgba(255, 255, 255, 0.6)",
   },
