@@ -37,10 +37,6 @@ const PlaylistById = () => {
     setOpenMenuId((prev) => (prev === songId ? null : songId));
   };
 
-  const handleUpdate = (songId: string) => {
-    router(`/dashboard/updateSong/${songId}`);
-  };
-
   const handleDelete = (songId: string) => {
     if (!playlist?._id) return;
     dispatch(
