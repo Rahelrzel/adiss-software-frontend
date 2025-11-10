@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import bgImage from "../../assets/bg.png"; // adjust path if needed
+import bgImage from "../../assets/bg.png";
 
 interface BackgroundProps {
   children: React.ReactNode;

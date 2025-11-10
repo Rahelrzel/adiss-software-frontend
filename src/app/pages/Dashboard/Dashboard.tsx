@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
 import { fetchPlaylistsRequest } from "../../stores/playlist/playlistSlice";
 import GetTotals from "../../components/GetTotals/GetTotals";
 import { useEffect } from "react";
+import cover from "../../../assets/image.png";
 
 const Dashboard = () => {
   const route = useNavigate();
@@ -40,7 +41,7 @@ const Dashboard = () => {
                   <PlaylistCard
                     name={p.name}
                     songCount={p.songs.length}
-                    coverImage="/src/assets/image.png"
+                    coverImage={cover}
                   />
                 </div>
               );

@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
 
+import artistImg from "../../assets/artist.png";
+import albumImg from "../../assets/album.png";
+import songImg from "../../assets/song.png";
+import genreImg from "../../assets/genre.png";
+
 import {
   TotalsContainer,
   TotalCard,
@@ -26,22 +31,22 @@ const GetTotals: React.FC = () => {
     {
       label: "Artists",
       value: stat.totals.totalArtists,
-      img: "/src/assets/artist.png",
+      img: artistImg,
     },
     {
       label: "Albums",
       value: stat.totals.totalAlbums,
-      img: "/src/assets/album.png",
+      img: albumImg,
     },
     {
       label: "Songs",
       value: stat.totals.totalSongs,
-      img: "/src/assets/song.png",
+      img: songImg,
     },
     {
       label: "Genres",
       value: stat.totals.totalGenres,
-      img: "/src/assets/genre.png",
+      img: genreImg,
     },
   ];
 

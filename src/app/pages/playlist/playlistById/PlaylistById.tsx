@@ -18,6 +18,7 @@ import {
   SongCard,
 } from "./playlistById.style";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import cover from "../../../assets/image.png";
 
 const PlaylistById = () => {
   const router = useNavigate();
@@ -63,7 +64,7 @@ const PlaylistById = () => {
           <PlaylistCard
             name={playlist.name}
             songCount={songs.length}
-            coverImage={"/src/assets/image.png"}
+            coverImage={cover}
           />
 
           <Flex direction="column" gap="20px">

@@ -26,6 +26,9 @@ import {
 import GlassOverlay from "../../components/GlassOverLay";
 import { Button } from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import theGirl from "../../../assets/theGirl.jpg";
+import theBorder from "../../../assets/Rectangle 49.svg";
+import theMic from "../../../assets/theMic.jpg";
 
 const Landing = () => {
   const route = useNavigate();
@@ -97,13 +100,10 @@ const Landing = () => {
           <RightSection>
             <RectangleWrapper>
               <StrokeDiv>
-                <img src="/src/assets/Rectangle 49.svg" />
+                <img src={theBorder} />
               </StrokeDiv>
               <RectangleImage width="250px" height="530px" radius="200px">
-                <img
-                  src="/src/assets/theGirl.jpg"
-                  alt="Woman with headphones"
-                />
+                <img src={theGirl} alt="Woman with headphones" />
               </RectangleImage>{" "}
             </RectangleWrapper>
 
@@ -114,7 +114,7 @@ const Landing = () => {
               </StatCircle>
 
               <RectangleImage width="200px" height="300px" radius="100px">
-                <img src="/src/assets/theMic.jpg" alt="Microphone" />
+                <img src={theMic} alt="Microphone" />
               </RectangleImage>
             </InnerRightSection>
           </RightSection>
