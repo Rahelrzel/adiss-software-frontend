@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
-import artistImg from "../../assets/artist.png";
-import albumImg from "../../assets/album.png";
-import songImg from "../../assets/song.png";
-import genreImg from "../../assets/genre.png";
+import artistImg from "../../../assets/artist.png";
+import albumImg from "../../../assets/album.png";
+import songImg from "../../../assets/song.png";
+import genreImg from "../../../assets/genre.png";
 
 import {
   TotalsContainer,

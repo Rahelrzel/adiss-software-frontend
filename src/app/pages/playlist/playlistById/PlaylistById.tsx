@@ -18,7 +18,7 @@ import {
   SongCard,
 } from "./playlistById.style";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import cover from "../../../assets/image.png";
+import cover from "../../../../assets/image.png";
 
 const PlaylistById = () => {
   const router = useNavigate();
