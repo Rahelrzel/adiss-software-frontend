@@ -1,11 +1,13 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-
 import GlassCard from "../../components/GlassCard";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { Form } from "../Auth/Auth.style";
+import { Flex } from "../../components/ui/Flex.syle.tsx";
+import { BiPlus } from "react-icons/bi";
+import { MdArrowDropDown } from "react-icons/md";
+
 import {
   StyledForm,
   Text,
@@ -15,27 +17,49 @@ import {
   LoadingText,
   EmptyText,
 } from "./song.style";
+
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
-import { createSongRequest } from "../../stores/song/songSlice";
 import { getArtistsRequest } from "../../stores/artist/artistSlice";
 import { getGenresRequest } from "../../stores/genre/genreSlice";
-import { getAlbumsRequest } from "../../stores/album/albumSlice"; // ✅ new import
+import { getAlbumsRequest } from "../../stores/album/albumSlice";
+import {
+  fetchSongByIdRequest,
+  updateSongRequest,
+} from "../../stores/song/songSlice";
 import { CreateSongSchema } from "./validation";
-import { Flex } from "../../components/ui/Flex.syle.tsx";
-import { BiPlus } from "react-icons/bi";
-import { MdArrowDropDown } from "react-icons/md";
+
 import CreateAlbumModal from "./CreateAlbumPage.tsx";
 import CreateArtistModal from "./CreateArtistPage.tsx";
 import CreateGenreModal from "./CreateGenrepage.tsx";
 import SpotifySearch from "./SpotifySeach.tsx";
 
-const CreateSong = () => {
-  const [isAlbumModalOpen, setAlbumModalOpen] = useState(false);
-  const [selectedArtistId, setSelectedArtistId] = useState("");
-  const [isArtistModalOpen, setArtistModalOpen] = useState(false);
-  const [isGenreModalOpen, setGenreModalOpen] = useState(false);
+// -------------------- TYPES --------------------
+interface PopulatedArtist {
+  _id: string;
+  name: string;
+}
+interface PopulatedAlbum {
+  _id: string;
+  name: string;
+}
+interface PopulatedGenre {
+  _id: string;
+  name: string;
+}
 
-  const { playlistId } = useParams<{ playlistId: string }>();
+interface SongFormValues {
+  title: string;
+  artistId: string;
+  albumId: string;
+  genre: string[];
+  spotifyUrl?: string;
+  image?: string;
+  playlistId?: string;
+}
+
+// -------------------- COMPONENT --------------------
+const UpdateSong = () => {
+  const { id, playlistId } = useParams<{ id: string; playlistId?: string }>();
   const router = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -46,88 +70,126 @@ const CreateSong = () => {
 
   const hasSubmitted = useRef(false);
 
+  const [isArtistModalOpen, setArtistModalOpen] = useState(false);
+  const [isAlbumModalOpen, setAlbumModalOpen] = useState(false);
+  const [isGenreModalOpen, setGenreModalOpen] = useState(false);
+
   const [artistName, setArtistName] = useState("");
-  const [genreName, setGenreName] = useState("");
   const [albumName, setAlbumName] = useState("");
+  const [genreName, setGenreName] = useState("");
 
   const [showArtistDropdown, setShowArtistDropdown] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
   const [showAlbumDropdown, setShowAlbumDropdown] = useState(false);
 
-  const formik = useFormik({
+  // -------------------- FETCH SONG --------------------
+  useEffect(() => {
+    if (id) dispatch(fetchSongByIdRequest(id));
+  }, [dispatch, id]);
+
+  // -------------------- FORM --------------------
+  const formik = useFormik<SongFormValues>({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      artistId: "",
-      albumId: "",
-      genre: [],
-      spotifyUrl: "",
-      image: "",
+      title: songState.currentSong?.title || "",
+      artistId:
+        typeof songState.currentSong?.artistId === "string"
+          ? songState.currentSong.artistId
+          : (songState.currentSong?.artistId as PopulatedArtist)?._id || "",
+      albumId:
+        typeof songState.currentSong?.albumId === "string"
+          ? songState.currentSong.albumId
+          : (songState.currentSong?.albumId as PopulatedAlbum)?._id || "",
+      genre: Array.isArray(songState.currentSong?.genre)
+        ? (songState.currentSong.genre as (string | PopulatedGenre)[]).map(
+            (g) => (typeof g === "string" ? g : g._id)
+          )
+        : [],
+      spotifyUrl: songState.currentSong?.spotifyUrl || "",
+      image: songState.currentSong?.image || "",
       playlistId: playlistId || "",
     },
     validationSchema: CreateSongSchema,
-    onSubmit: async (values) => {
-      console.log("Submitting values:", values);
+    onSubmit: (values) => {
+      if (!id) return;
+
+      // ✅ Clean payload for backend validation
       const payload = {
-        title: values.title,
-        artistId: values.artistId,
-        albumId: values.albumId,
-        genre: values.genre,
-        spotifyUrl: values.spotifyUrl,
-        image: values.image,
-        playlistId: values.playlistId || undefined,
+        ...values,
+        artistId:
+          typeof values.artistId === "string"
+            ? values.artistId
+            : (values.artistId as any)?._id,
+        albumId:
+          typeof values.albumId === "string"
+            ? values.albumId
+            : (values.albumId as any)?._id,
+        genre: Array.isArray(values.genre)
+          ? values.genre.map((g: any) => (typeof g === "string" ? g : g?._id))
+          : [],
       };
 
-      dispatch(createSongRequest(payload));
+      console.log("🟢 Update payload sent to backend:", payload);
+      dispatch(updateSongRequest({ id, data: payload }));
       hasSubmitted.current = true;
     },
   });
 
+  // -------------------- SET DISPLAY NAMES --------------------
+  useEffect(() => {
+    const song = songState.currentSong;
+    if (!song) return;
+
+    setArtistName(
+      typeof song.artistId === "string"
+        ? ""
+        : (song.artistId as PopulatedArtist).name || ""
+    );
+    setAlbumName(
+      typeof song.albumId === "string"
+        ? ""
+        : (song.albumId as PopulatedAlbum).name || ""
+    );
+    setGenreName(
+      Array.isArray(song.genre)
+        ? (song.genre as (string | PopulatedGenre)[])
+            .map((g) => (typeof g === "string" ? "" : g.name))
+            .join(", ")
+        : ""
+    );
+  }, [songState.currentSong]);
+
+  // -------------------- NAVIGATE AFTER UPDATE --------------------
   useEffect(() => {
     if (hasSubmitted.current && !songState.loading && !songState.error) {
-      if (playlistId) {
-        router(`/dashboard/playlist/${playlistId}`);
-      } else {
-        router("/dashboard");
-      }
+      router(`/dashboard/playlist/${playlistId || ""}`);
       hasSubmitted.current = false;
     }
   }, [songState.loading, songState.error, router, playlistId]);
 
-  useEffect(() => {
-    if (songState.error && songState.error.field) {
-      formik.setFieldError(songState.error.field, songState.error.msg);
-    }
-  }, [songState.error]);
+  if (songState.loading)
+    return <p style={{ color: "white" }}>Loading song data...</p>;
 
-  // Dropdown togglers
-  const handleArtistDropdown = () => {
-    if (!showArtistDropdown) dispatch(getArtistsRequest());
-    setShowArtistDropdown((prev) => !prev);
-  };
-
-  const handleGenreDropdown = () => {
-    if (!showGenreDropdown) dispatch(getGenresRequest());
-    setShowGenreDropdown((prev) => !prev);
-  };
-
-  const handleAlbumDropdown = () => {
-    if (!showAlbumDropdown) dispatch(getAlbumsRequest());
-    setShowAlbumDropdown((prev) => !prev);
-  };
-
+  // -------------------- RENDER --------------------
   return (
-    <Flex direction="row">
+    <Flex direction="row" gap="20px">
       <GlassCard width="600px" height="500px">
-        <Text>Create Song</Text>{" "}
-        <Form onSubmit={formik.handleSubmit}>
+        <Text>Update Song</Text>
+        <form onSubmit={formik.handleSubmit}>
           <StyledForm>
             <FormikInput
               name="title"
               formik={formik}
               placeholder="Song title"
             />
+            <FormikInput
+              name="spotifyUrl"
+              formik={formik}
+              placeholder="Spotify URL"
+            />
+            <FormikInput name="image" formik={formik} placeholder="Image URL" />
 
-            {/* 🎤 Artist Dropdown */}
+            {/* Artist Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -141,21 +203,21 @@ const CreateSong = () => {
                   width="50px"
                   type="button"
                   leftIcon={<MdArrowDropDown />}
-                  onClick={handleArtistDropdown}
+                  onClick={() => {
+                    if (!showArtistDropdown) dispatch(getArtistsRequest());
+                    setShowArtistDropdown((prev) => !prev);
+                  }}
                 />
-
                 <Button
                   width="50px"
                   onClick={() => setArtistModalOpen(true)}
                   leftIcon={<BiPlus />}
                 />
-
                 <CreateArtistModal
                   isOpen={isArtistModalOpen}
                   onClose={() => setArtistModalOpen(false)}
                 />
               </Flex>
-
               {showArtistDropdown && (
                 <DropdownList>
                   {artistState.loading ? (
@@ -167,7 +229,6 @@ const CreateSong = () => {
                         onClick={() => {
                           formik.setFieldValue("artistId", artist._id);
                           setArtistName(artist.name);
-                          setSelectedArtistId(artist._id);
                           setShowArtistDropdown(false);
                         }}
                       >
@@ -181,7 +242,7 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* 🎶 Genre Dropdown */}
+            {/* Genre Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -195,21 +256,21 @@ const CreateSong = () => {
                   width="50px"
                   type="button"
                   leftIcon={<MdArrowDropDown />}
-                  onClick={handleGenreDropdown}
+                  onClick={() => {
+                    if (!showGenreDropdown) dispatch(getGenresRequest());
+                    setShowGenreDropdown((prev) => !prev);
+                  }}
                 />
-
                 <Button
                   width="50px"
                   onClick={() => setGenreModalOpen(true)}
                   leftIcon={<BiPlus />}
                 />
-
                 <CreateGenreModal
                   isOpen={isGenreModalOpen}
                   onClose={() => setGenreModalOpen(false)}
                 />
               </Flex>
-
               {showGenreDropdown && (
                 <DropdownList>
                   {genreState.loading ? (
@@ -234,6 +295,7 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
+            {/* Album Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -247,28 +309,26 @@ const CreateSong = () => {
                   width="50px"
                   type="button"
                   leftIcon={<MdArrowDropDown />}
-                  onClick={handleAlbumDropdown}
+                  onClick={() => {
+                    if (!showAlbumDropdown) dispatch(getAlbumsRequest());
+                    setShowAlbumDropdown((prev) => !prev);
+                  }}
                 />
-
                 <Button
                   width="50px"
                   onClick={() => {
-                    if (!selectedArtistId) {
-                      alert("Please select an artist first!");
-                      return;
-                    }
+                    if (!formik.values.artistId)
+                      return alert("Select artist first!");
                     setAlbumModalOpen(true);
                   }}
                   leftIcon={<BiPlus />}
                 />
-
                 <CreateAlbumModal
                   isOpen={isAlbumModalOpen}
                   onClose={() => setAlbumModalOpen(false)}
-                  artistId={selectedArtistId}
+                  artistId={formik.values.artistId}
                 />
               </Flex>
-
               {showAlbumDropdown && (
                 <DropdownList>
                   {albumState.loading ? (
@@ -293,14 +353,6 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            <FormikInput
-              name="spotifyUrl"
-              formik={formik}
-              placeholder="Spotify URL"
-            />
-
-            <FormikInput name="image" formik={formik} placeholder="Image URL" />
-
             <Button
               width="50"
               type="submit"
@@ -309,11 +361,13 @@ const CreateSong = () => {
               glow
               isLoading={songState.loading}
             >
-              Create
+              Update
             </Button>
           </StyledForm>
-        </Form>
+        </form>
       </GlassCard>
+
+      {/* Spotify Search */}
       <GlassCard width="300px">
         <SpotifySearch
           onSelectTrack={(track) => {
@@ -327,4 +381,4 @@ const CreateSong = () => {
   );
 };
 
-export default CreateSong;
+export default UpdateSong;

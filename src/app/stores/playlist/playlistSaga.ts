@@ -7,7 +7,6 @@ import PlaylistApi, {
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import {
-  fetchPlaylistsRequest,
   fetchPlaylistsSuccess,
   fetchPlaylistsError,
   createPlaylistRequest,
@@ -22,6 +21,10 @@ import {
   fetchPlaylistByIdSuccess,
   fetchPlaylistByIdError,
   fetchPlaylistByIdRequest,
+  removeSongFromPlaylistError,
+  removeSongFromPlaylistSuccess,
+  fetchPlaylistsRequest,
+  removeSongFromPlaylistRequest,
 } from "./playlistSlice";
 
 function* FetchPlaylists() {
@@ -33,7 +36,7 @@ function* FetchPlaylists() {
       PlaylistApi.getPlaylists,
       token
     );
-    console.log("✅ [Saga] Fetch Playlists:", playlists);
+
     yield put(fetchPlaylistsSuccess(playlists));
   } catch (e) {
     if (e instanceof AxiosError) {
@@ -49,7 +52,7 @@ function* CreatePlaylist(action: PayloadAction<CreatePlaylistParams>) {
 
     let playlist: SagaReturnType<typeof PlaylistApi.createPlaylist> =
       yield call(PlaylistApi.createPlaylist, action.payload, token);
-    console.log("✅ [Saga] Create Playlist:", playlist);
+
     yield put(createPlaylistSuccess(playlist));
   } catch (e) {
     if (e instanceof AxiosError) {
@@ -65,7 +68,7 @@ function* FetchPlaylistById(action: PayloadAction<string>) {
 
     const playlist: SagaReturnType<typeof PlaylistApi.getPlaylistById> =
       yield call(PlaylistApi.getPlaylistById, action.payload, token);
-    console.log("✅ [Saga] Fetch Playlist By ID:", playlist);
+
     yield put(fetchPlaylistByIdSuccess(playlist));
   } catch (e) {
     if (e instanceof AxiosError) {
@@ -80,7 +83,7 @@ function* UpdatePlaylist(action: PayloadAction<UpdatePlaylistParams>) {
       PlaylistApi.updatePlaylist,
       action.payload
     );
-    console.log("✅ [Saga] Update Playlist:", updated);
+
     yield put(updatePlaylistSuccess(updated));
   } catch (e) {
     if (e instanceof AxiosError) {
@@ -92,11 +95,35 @@ function* UpdatePlaylist(action: PayloadAction<UpdatePlaylistParams>) {
 function* DeletePlaylist(action: PayloadAction<string>) {
   try {
     yield call(PlaylistApi.deletePlaylist, action.payload);
-    console.log("✅ [Saga] Delete Playlist:", action.payload);
+
     yield put(deletePlaylistSuccess(action.payload));
   } catch (e) {
     if (e instanceof AxiosError) {
       yield put(deletePlaylistError(e.response?.data));
+    }
+  }
+}
+
+function* RemoveSongFromPlaylist(
+  action: PayloadAction<{ playlistId: string; songId: string }>
+) {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("User token not found");
+
+    yield call(
+      PlaylistApi.removeSongFromPlaylist,
+      {
+        playlistId: action.payload.playlistId,
+        songId: action.payload.songId,
+      },
+      token
+    );
+
+    yield put(removeSongFromPlaylistSuccess(action.payload));
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      yield put(removeSongFromPlaylistError(e.response?.data));
     }
   }
 }
@@ -118,4 +145,7 @@ export function* watchDeletePlaylist() {
 }
 export function* watchFetchPlaylistById() {
   yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
+}
+export function* watchRemoveSongFromPlaylist() {
+  yield takeEvery(removeSongFromPlaylistRequest.type, RemoveSongFromPlaylist);
 }

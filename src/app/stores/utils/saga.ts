@@ -6,14 +6,16 @@ import {
   watchUpdatePlaylist,
   watchDeletePlaylist,
   watchFetchPlaylistById,
+  watchRemoveSongFromPlaylist,
 } from "../playlist/playlistSaga";
 import { albumSaga } from "../album/albumSaga";
 import { artistSaga } from "../artist/artistSaga";
-import { genreSaga } from "../genre/generSaga";
+import { genreSaga } from "../genre/genreSaga";
 import {
   watchCreateSong,
   watchFetchSong,
   watchGetSongById,
+  watchUpdateSong,
 } from "../song/songSaga";
 import { spotifySaga } from "../spotify/spotifySaga";
 import { statSaga } from "../stat/stat.saga";
@@ -27,13 +29,17 @@ export function* rootSaga() {
     watchUpdatePlaylist(),
     watchDeletePlaylist(),
     watchFetchPlaylistById(),
+    watchRemoveSongFromPlaylist(),
     albumSaga(),
     artistSaga(),
     genreSaga(),
     watchFetchSong(),
     watchCreateSong(),
     watchGetSongById(),
+
+    watchUpdateSong(),
     spotifySaga(),
     statSaga(),
+    watchUpdateSong(),
   ]);
 }

@@ -7,7 +7,12 @@ import { routerConfig } from "./config/router.tsx";
 import { Global } from "@emotion/react";
 import { GlobalStyle } from "./app/components/GlobalStyle.tsx";
 import { store } from "./app/stores/utils/index.ts";
-import { Provider } from "react-redux"; 
+import { Provider } from "react-redux";
+
+import "@fontsource/dm-sans/400.css";
+import "@fontsource/dm-sans/700.css";
+import "@fontsource/playfair-display/400.css";
+import "@fontsource/playfair-display/700.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

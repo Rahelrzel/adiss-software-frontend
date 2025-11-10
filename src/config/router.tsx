@@ -7,7 +7,8 @@ import CreatePlaylist from "../app/pages/playlist/CreatePlaylist";
 import PlaylistById from "../app/pages/playlist/playlistById/PlaylistById";
 import CreateSong from "../app/pages/song/CreateSong";
 import DashboardLayout from "../app/pages/DashboardLayout";
-// ✅ use this layout
+import UpdateSong from "../app/pages/song/UpdateSong";
+import DiscoverPage from "../app/components/Discover";
 
 export const routerConfig = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -15,12 +16,14 @@ export const routerConfig = createBrowserRouter([
   { path: "/", element: <Landing /> },
   {
     path: "/dashboard",
-    element: <DashboardLayout />, // ✅ layout with sidebar + outlet
+    element: <DashboardLayout />,
     children: [
-      { index: true, element: <Dashboard /> }, // /dashboard
-      { path: "playlist/:id", element: <PlaylistById /> }, // /dashboard/playlist/:id
+      { index: true, element: <Dashboard /> },
+      { path: "playlist/:id", element: <PlaylistById /> },
       { path: "createPlaylist", element: <CreatePlaylist /> },
       { path: "createSong/:playlistId?", element: <CreateSong /> },
+      { path: "updateSong/:id/:playlistId?", element: <UpdateSong /> },
+      { path: "discover", element: <DiscoverPage /> }, // ✅ new route
     ],
   },
 ]);

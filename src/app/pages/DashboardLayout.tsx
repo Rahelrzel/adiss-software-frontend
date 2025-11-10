@@ -3,8 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Logo } from "../pages/Landing/Landing.style";
 import { HiHome } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
-import { MdMic } from "react-icons/md";
-import { BiPodcast, BiPlus } from "react-icons/bi";
+
+import { BiPlus } from "react-icons/bi";
 
 import {
   Sidebar,
@@ -39,18 +39,7 @@ const DashboardLayout = () => {
             >
               Discover
             </Button>
-            <Button
-              leftIcon={<MdMic />}
-              onClick={() => route("/dashboard/artists")}
-            >
-              Artists
-            </Button>
-            <Button
-              leftIcon={<BiPodcast />}
-              onClick={() => route("/dashboard/podcasts")}
-            >
-              Podcasts
-            </Button>
+
             <Button leftIcon={<BiPlus />} onClick={handleCreatePlaylist}>
               Create Playlist
             </Button>

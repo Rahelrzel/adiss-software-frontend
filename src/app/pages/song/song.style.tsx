@@ -17,15 +17,17 @@ export const StyledForm = styled.div`
 
 export const DropdownWrapper = styled.div`
   position: relative;
-  width: 100%;
+  min-width: 180px;
+  width: auto;
+  display: inline-block;
 `;
 
 export const DropdownList = styled.div`
   position: absolute;
-  top: 0px;
+  top: 45px;
   left: 0;
-  width: 250px;
-  background: rgba(0, 0, 0, 1);
+  width: 220px;
+  background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   max-height: 150px;

@@ -40,14 +40,34 @@ const getPlaylistById = async (id: string, token: string) => {
 
 const updatePlaylist = async (data: UpdatePlaylistParams) => {
   const playlist = await axios
-    .put<PlaylistResponse>(`${apiUrl}/api/playlists/${data.id}`, data)
+    .put<PlaylistResponse>(`${apiUrl}/api/playlist/${data.id}`, data)
     .then((res) => res.data);
   return playlist;
 };
 
 const deletePlaylist = async (id: string) => {
-  const res = await axios.delete(`${apiUrl}/api/playlists/${id}`);
+  const res = await axios.delete(`${apiUrl}/api/playlist/${id}`);
   return res.data;
+};
+
+interface RemoveSongParams {
+  playlistId: string;
+  songId: string;
+}
+
+const removeSongFromPlaylist = async (
+  data: RemoveSongParams,
+  token: string
+) => {
+  const res = await axios
+    .post<PlaylistResponse>(
+      `${apiUrl}/api/playlist/remove-song`,
+      data,
+      authHeader(token)
+    )
+    .then((res) => res.data);
+
+  return res;
 };
 
 export default {
@@ -56,4 +76,5 @@ export default {
   getPlaylistById,
   updatePlaylist,
   deletePlaylist,
+  removeSongFromPlaylist,
 };

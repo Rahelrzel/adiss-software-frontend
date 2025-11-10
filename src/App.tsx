@@ -11,7 +11,7 @@ function App() {
       const result = await testConnection();
       if (result)
         setMessage(`✅ Connected to backend: ${JSON.stringify(result)}`);
-      else setMessage("❌ Could not connect to backend");
+      else setMessage(" Could not connect to backend");
     };
     checkBackend();
   }, []);

@@ -12,42 +12,52 @@ export interface CreateSongParams {
   playlistId?: string;
 }
 
-export interface UpdateSongParams extends Partial<CreateSongParams> {
-  id: string;
-}
+// For updating, we’ll send all fields *except id* in the body
+export interface UpdateSongParams extends Partial<CreateSongParams> {}
 
+// ✅ Create song
 const createSong = async (data: CreateSongParams, token: string) => {
-  const song = await axios
-    .post<SongResponse>(`${apiUrl}/api/songs`, data, authHeader(token))
-    .then((res) => res.data);
-  return song;
+  const res = await axios.post<SongResponse>(
+    `${apiUrl}/api/songs`,
+    data,
+    authHeader(token)
+  );
+  return res.data;
 };
 
+// ✅ Get all songs
 const getSongs = async (token: string) => {
-  const songs = await axios
-    .get<SongResponse[]>(`${apiUrl}/api/songs`, authHeader(token))
-    .then((res) => res.data);
-  return songs;
+  const res = await axios.get<SongResponse[]>(
+    `${apiUrl}/api/songs`,
+    authHeader(token)
+  );
+  return res.data;
 };
 
+// ✅ Get single song by ID
 const getSongById = async (id: string, token: string) => {
-  const song = await axios
-    .get<SongResponse>(`${apiUrl}/api/songs/${id}`, authHeader(token))
-    .then((res) => res.data);
-  return song;
+  const res = await axios.get<SongResponse>(
+    `${apiUrl}/api/songs/${id}`,
+    authHeader(token)
+  );
+  return res.data;
 };
 
-const updateSong = async (data: UpdateSongParams, token: string) => {
-  const song = await axios
-    .put<SongResponse>(
-      `${apiUrl}/api/songs/${data.id}`,
-      data,
-      authHeader(token)
-    )
-    .then((res) => res.data);
-  return song;
+// ✅ Update song (id only in URL — not in body)
+const updateSong = async (
+  id: string,
+  data: UpdateSongParams,
+  token: string
+) => {
+  const res = await axios.put<SongResponse>(
+    `${apiUrl}/api/songs/${id}`,
+    data,
+    authHeader(token)
+  );
+  return res.data;
 };
 
+// ✅ Delete song
 const deleteSong = async (id: string, token: string) => {
   const res = await axios.delete(
     `${apiUrl}/api/songs/${id}`,

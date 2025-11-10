@@ -100,6 +100,51 @@ const playlistSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+
+    removeSongFromPlaylistRequest: (
+      state,
+      _action: PayloadAction<{ playlistId: string; songId: string }>
+    ) => {
+      state.loading = true;
+    },
+    removeSongFromPlaylistSuccess: (
+      state,
+      action: PayloadAction<{ playlistId: string; songId: string }>
+    ) => {
+      const { playlistId, songId } = action.payload;
+
+      // ✅ Update playlists array
+      const playlistIndex = state.playlist.findIndex(
+        (p) => p._id === playlistId
+      );
+      if (playlistIndex !== -1) {
+        state.playlist[playlistIndex].songs = state.playlist[
+          playlistIndex
+        ].songs?.filter((song) => song._id !== songId);
+      }
+
+      // ✅ Update currentPlaylist if it's the one being modified
+      if (state.currentPlaylist?._id === playlistId) {
+        state.currentPlaylist = {
+          ...state.currentPlaylist,
+          songs:
+            state.currentPlaylist.songs?.filter(
+              (song) => song._id !== songId
+            ) || [],
+        };
+      }
+
+      state.loading = false;
+      state.error = undefined;
+    },
+
+    removeSongFromPlaylistError: (
+      state,
+      action: PayloadAction<ErrorResponse>
+    ) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -119,6 +164,9 @@ export const {
   fetchPlaylistByIdRequest,
   fetchPlaylistByIdSuccess,
   fetchPlaylistByIdError,
+  removeSongFromPlaylistError,
+  removeSongFromPlaylistRequest,
+  removeSongFromPlaylistSuccess,
 } = playlistSlice.actions;
 
 export default playlistSlice.reducer;
