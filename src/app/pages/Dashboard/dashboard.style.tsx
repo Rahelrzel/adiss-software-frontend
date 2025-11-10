@@ -7,62 +7,30 @@ export const Container = styled.div`
   gap: 1rem;
 `;
 
-export const LeftSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  gap: 2rem;
-`;
-
-export const BottomSection = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
 export const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  position: sticky;
+  top: 20px;
+
+  padding: 1.5rem;
+  width: 300px;
+  height: 600px;
+
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(50px);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  z-index: 10;
 `;
 
 export const Menu = styled.p`
-  font-size: 1;
-  color: #ffffffff;
-  margin: 0;
-`;
-
-export const VectorContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1; /* keeps it above background but below main content */
-
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-
-  img,
-  svg {
-    width: 450px; /* adjust as needed */
-    height: 550px; /* adjust as needed */
-  }
-`;
-
-export const HeaderSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-
-  h2 {
-    color: white;
-    font-size: 22px;
-    font-weight: 600;
-  }
+  margin: 2rem 0;
 `;
 
 interface PlaylistCardProps {

@@ -6,7 +6,7 @@ import Dashboard from "../app/pages/Dashboard/Dashboard";
 import CreatePlaylist from "../app/pages/playlist/CreatePlaylist";
 import PlaylistById from "../app/pages/playlist/playlistById/PlaylistById";
 import CreateSong from "../app/pages/song/CreateSong";
-import DashboardLayout from "../app/pages/DashboardLayout";
+import DashboardLayout from "../app/pages/Dashboard/DashboardLayout";
 import UpdateSong from "../app/pages/song/UpdateSong";
 import DiscoverPage from "../app/components/Discover";
 
