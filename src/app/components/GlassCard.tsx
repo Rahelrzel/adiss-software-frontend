@@ -20,7 +20,7 @@ export default GlassCard;
 const CardContainer = styled.div`
   position: relative;
   backdrop-filter: blur(15px);
-  background: rgba(0, 0, 0, 0.11);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);

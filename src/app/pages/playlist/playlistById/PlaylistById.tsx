@@ -27,6 +27,7 @@ const PlaylistById = () => {
   const { currentPlaylist: playlist, loading } = useAppSelector(
     (state) => state.playlist
   );
+  const { user } = useAppSelector((state) => state.user);
 
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
@@ -55,8 +56,7 @@ const PlaylistById = () => {
   }
 
   const songs = playlist.songs?.filter(Boolean) || [];
-
-  const isEditable = !playlist.isPublished;
+  const isOwner = user?.id === playlist.userId?._id;
 
   return (
     <GlassCard width="1020px" height="auto">
@@ -74,7 +74,8 @@ const PlaylistById = () => {
             <p style={{ color: "white" }}>{playlist.description}</p>
             <p style={{ color: "white" }}>Songs: {songs.length}</p>
 
-            {isEditable && (
+            {/* ✅ Only the playlist owner can add songs */}
+            {isOwner && (
               <Button
                 shape="round"
                 colorScheme="white"
@@ -99,7 +100,6 @@ const PlaylistById = () => {
                 >
                   <SongCard image={song.image || "/src/assets/theGirl.jpg"} />
 
-                  {/* Song Details */}
                   <Flex direction="column">
                     <div style={{ color: "white" }}>
                       {song.title || "Untitled"}
@@ -137,7 +137,8 @@ const PlaylistById = () => {
                   </Flex>
                 </SongInfo>
 
-                {isEditable && (
+                {/* ✅ Only show update/delete options to the owner */}
+                {isOwner && (
                   <>
                     <OptionsButton onClick={() => handleMenuToggle(song._id)}>
                       <BsThreeDotsVertical />
