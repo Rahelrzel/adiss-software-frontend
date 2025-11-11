@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiUrl } from "../../config/api";
-import type { UserResponse } from "../types/user.type";
+import type { LoginResponse, UserResponse } from "../types/user.type";
 
 export interface LoginParameters {
   email: string;
@@ -8,7 +8,7 @@ export interface LoginParameters {
 }
 const login = async ({ email, password }: LoginParameters) => {
   const user = await axios
-    .post<UserResponse>(apiUrl + "/api/auth/login", { email, password })
+    .post<LoginResponse>(apiUrl + "/api/auth/login", { email, password })
     .then((res) => res.data);
   return user;
 };

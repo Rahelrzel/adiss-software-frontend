@@ -56,12 +56,11 @@ const PlaylistById = () => {
   }
 
   const songs = playlist.songs?.filter(Boolean) || [];
-  const isOwner = user?.id === playlist.userId?._id;
+  const isOwner = user?.id === playlist.userId._id;
 
   return (
     <GlassCard width="1020px" height="auto">
       <Flex direction="column" gap="20px">
-        {/* Playlist Header */}
         <Flex direction="row" gap="50px">
           <PlaylistCard
             name={playlist.name}
@@ -74,7 +73,6 @@ const PlaylistById = () => {
             <p style={{ color: "white" }}>{playlist.description}</p>
             <p style={{ color: "white" }}>Songs: {songs.length}</p>
 
-            {/* ✅ Only the playlist owner can add songs */}
             {isOwner && (
               <Button
                 shape="round"
@@ -87,7 +85,6 @@ const PlaylistById = () => {
           </Flex>
         </Flex>
 
-        {/* Song List */}
         <Flex direction="column" gap="15px">
           {songs.length > 0 ? (
             songs.map((song) => (
@@ -137,7 +134,6 @@ const PlaylistById = () => {
                   </Flex>
                 </SongInfo>
 
-                {/* ✅ Only show update/delete options to the owner */}
                 {isOwner && (
                   <>
                     <OptionsButton onClick={() => handleMenuToggle(song._id)}>

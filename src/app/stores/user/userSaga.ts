@@ -17,14 +17,15 @@ function normalizeError(e: unknown) {
 
 function* Login(action: PayloadAction<LoginParameters>) {
   try {
-    const user: SagaReturnType<typeof UserApi.login> = yield call(
+    const res: SagaReturnType<typeof UserApi.login> = yield call(
       UserApi.login,
       action.payload
     );
 
-    if (user.token) localStorage.setItem("token", user.token);
+    if (res.token) localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
 
-    yield put(loginDone(user));
+    yield put(loginDone(res.user));
   } catch (err: unknown) {
     const error = normalizeError(err);
     yield put(loginError(error));
