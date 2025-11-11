@@ -265,13 +265,13 @@ const DiscoverPage = () => {
                 typeof song.artistId === "string"
                   ? artistState.artists.find((a) => a._id === song.artistId)
                       ?.name ?? "Unknown"
-                  : song.artistId.name ?? "Unknown";
+                  : song.artistId?.name ?? "Unknown";
 
               // const albumName =
               //   typeof song.albumId === "string"
               //     ? albumState.albums.find((a) => a._id === song.albumId)
               //         ?.name ?? "Unknown"
-              //     : song.albumId.name ?? "Unknown";
+              //     : song.albumId?.name ?? "Unknown";
 
               // const genres = Array.isArray(song.genre)
               //   ? song.genre
@@ -279,7 +279,7 @@ const DiscoverPage = () => {
               //         typeof g === "string"
               //           ? genreState.genres.find((gg) => gg._id === g)?.name ??
               //             "Unknown"
-              //           : g.name ?? "Unknown"
+              //           : g?.name ?? "Unknown"
               //       )
               //       .join(", ")
               //   : "Unknown";
