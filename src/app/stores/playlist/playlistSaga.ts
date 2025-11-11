@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 import { AxiosError } from "axios";
 import PlaylistApi, {
   type CreatePlaylistParams,
@@ -129,23 +129,23 @@ function* RemoveSongFromPlaylist(
 }
 
 export function* watchFetchPlaylists() {
-  yield takeEvery(fetchPlaylistsRequest.type, FetchPlaylists);
+  yield takeLatest(fetchPlaylistsRequest.type, FetchPlaylists);
 }
 
 export function* watchCreatePlaylist() {
-  yield takeEvery(createPlaylistRequest.type, CreatePlaylist);
+  yield takeLatest(createPlaylistRequest.type, CreatePlaylist);
 }
 
 export function* watchUpdatePlaylist() {
-  yield takeEvery(updatePlaylistRequest.type, UpdatePlaylist);
+  yield takeLatest(updatePlaylistRequest.type, UpdatePlaylist);
 }
 
 export function* watchDeletePlaylist() {
-  yield takeEvery(deletePlaylistRequest.type, DeletePlaylist);
+  yield takeLatest(deletePlaylistRequest.type, DeletePlaylist);
 }
 export function* watchFetchPlaylistById() {
-  yield takeEvery(fetchPlaylistByIdRequest.type, FetchPlaylistById);
+  yield takeLatest(fetchPlaylistByIdRequest.type, FetchPlaylistById);
 }
 export function* watchRemoveSongFromPlaylist() {
-  yield takeEvery(removeSongFromPlaylistRequest.type, RemoveSongFromPlaylist);
+  yield takeLatest(removeSongFromPlaylistRequest.type, RemoveSongFromPlaylist);
 }

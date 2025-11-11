@@ -5,7 +5,7 @@ import { fetchSongsRequest } from "../stores/song/songSlice";
 import { getArtistsRequest } from "../stores/artist/artistSlice";
 import { getAlbumsRequest } from "../stores/album/albumSlice";
 import { getGenresRequest } from "../stores/genre/genreSlice";
-import { Flex } from "./ui/Flex.syle";
+import { Flex } from "./ui/Flex.style";
 import GlassCard from "./GlassCard";
 import Button from "./ui/Button";
 import {
@@ -15,6 +15,23 @@ import {
   EmptyText,
   LoadingText,
 } from "../pages/song/song.style";
+import type { SongResponse } from "../types/song.type";
+
+interface Artist {
+  _id: string;
+  name: string;
+}
+
+interface Album {
+  _id: string;
+  name: string;
+  artistId: string | { _id: string; name?: string };
+}
+
+interface Genre {
+  _id: string;
+  name: string;
+}
 
 const SongsContainer = styled.div`
   display: grid;
@@ -31,8 +48,8 @@ const SongBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background 0.2s ease;
   cursor: pointer;
+  transition: background 0.2s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -59,12 +76,12 @@ const SongBox = styled.div`
 
 const DiscoverPage = () => {
   const dispatch = useAppDispatch();
+
   const songState = useAppSelector((state) => state.song);
   const artistState = useAppSelector((state) => state.artist);
   const albumState = useAppSelector((state) => state.album);
   const genreState = useAppSelector((state) => state.genre);
 
-  const [filteredSongs, setFilteredSongs] = useState<any[]>([]);
   const [selectedArtist, setSelectedArtist] = useState<string>("");
   const [selectedAlbum, setSelectedAlbum] = useState<string>("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
@@ -73,7 +90,8 @@ const DiscoverPage = () => {
   const [showAlbumDropdown, setShowAlbumDropdown] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
-  // Fetch all data on load
+  const [filteredSongs, setFilteredSongs] = useState<SongResponse[]>([]);
+
   useEffect(() => {
     dispatch(fetchSongsRequest());
     dispatch(getArtistsRequest());
@@ -81,29 +99,28 @@ const DiscoverPage = () => {
     dispatch(getGenresRequest());
   }, [dispatch]);
 
-  // Filter logic
   useEffect(() => {
-    let filtered = songState.songs;
+    let filtered: SongResponse[] = songState.songs;
 
     if (selectedArtist) {
-      filtered = filtered.filter(
-        (s) =>
-          (typeof s.artistId === "string" ? s.artistId : s.artistId?._id) ===
-          selectedArtist
-      );
+      filtered = filtered.filter((s) => {
+        const artistId =
+          typeof s.artistId === "string" ? s.artistId : s.artistId._id;
+        return artistId === selectedArtist;
+      });
     }
 
     if (selectedAlbum) {
-      filtered = filtered.filter(
-        (s) =>
-          (typeof s.albumId === "string" ? s.albumId : s.albumId?._id) ===
-          selectedAlbum
-      );
+      filtered = filtered.filter((s) => {
+        const albumId =
+          typeof s.albumId === "string" ? s.albumId : s.albumId._id;
+        return albumId === selectedAlbum;
+      });
     }
 
     if (selectedGenre) {
       filtered = filtered.filter((s) =>
-        s.genre?.some((g: any) =>
+        s.genre?.some((g) =>
           typeof g === "string" ? g === selectedGenre : g._id === selectedGenre
         )
       );
@@ -112,27 +129,29 @@ const DiscoverPage = () => {
     setFilteredSongs(filtered);
   }, [selectedArtist, selectedAlbum, selectedGenre, songState.songs]);
 
-  const songsToRender = filteredSongs.length
-    ? filteredSongs
-    : songState.songs || [];
+  const availableAlbums: Album[] = selectedArtist
+    ? albumState.albums.filter((a) => {
+        const artistId =
+          typeof a.artistId === "string" ? a.artistId : a.artistId._id;
+        return artistId === selectedArtist;
+      })
+    : albumState.albums;
 
   return (
     <Flex direction="column" gap="20px" style={{ width: "100%" }}>
       <h2 style={{ color: "white", fontSize: "24px" }}>Discover Songs</h2>
 
-      {/* 🔹 One GlassCard for Everything */}
       <GlassCard width="100%" height="auto">
-        {/* Filters */}
         <Flex direction="row" gap="16px" wrap="wrap" align="center">
-          {/* Artist Filter */}
           <DropdownWrapper>
             <Button
               colorScheme="white"
               onClick={() => setShowArtistDropdown((prev) => !prev)}
             >
               {selectedArtist
-                ? artistState.artists.find((a) => a._id === selectedArtist)
-                    ?.name
+                ? artistState.artists.find(
+                    (a: Artist) => a._id === selectedArtist
+                  )?.name
                 : "Filter by Artist"}
             </Button>
             {showArtistDropdown && (
@@ -140,11 +159,12 @@ const DiscoverPage = () => {
                 {artistState.loading ? (
                   <LoadingText>Loading...</LoadingText>
                 ) : artistState.artists.length > 0 ? (
-                  artistState.artists.map((artist) => (
+                  artistState.artists.map((artist: Artist) => (
                     <DropdownItem
                       key={artist._id}
                       onClick={() => {
                         setSelectedArtist(artist._id);
+                        setSelectedAlbum("");
                         setShowArtistDropdown(false);
                       }}
                     >
@@ -165,15 +185,15 @@ const DiscoverPage = () => {
               onClick={() => setShowAlbumDropdown((prev) => !prev)}
             >
               {selectedAlbum
-                ? albumState.albums.find((a) => a._id === selectedAlbum)?.name
+                ? availableAlbums.find((a) => a._id === selectedAlbum)?.name
                 : "Filter by Album"}
             </Button>
             {showAlbumDropdown && (
               <DropdownList>
                 {albumState.loading ? (
                   <LoadingText>Loading...</LoadingText>
-                ) : albumState.albums.length > 0 ? (
-                  albumState.albums.map((album) => (
+                ) : availableAlbums.length > 0 ? (
+                  availableAlbums.map((album: Album) => (
                     <DropdownItem
                       key={album._id}
                       onClick={() => {
@@ -198,7 +218,8 @@ const DiscoverPage = () => {
               onClick={() => setShowGenreDropdown((prev) => !prev)}
             >
               {selectedGenre
-                ? genreState.genres.find((g) => g._id === selectedGenre)?.name
+                ? genreState.genres.find((g: Genre) => g._id === selectedGenre)
+                    ?.name
                 : "Filter by Genre"}
             </Button>
             {showGenreDropdown && (
@@ -206,7 +227,7 @@ const DiscoverPage = () => {
                 {genreState.loading ? (
                   <LoadingText>Loading...</LoadingText>
                 ) : genreState.genres.length > 0 ? (
-                  genreState.genres.map((genre) => (
+                  genreState.genres.map((genre: Genre) => (
                     <DropdownItem
                       key={genre._id}
                       onClick={() => {
@@ -224,9 +245,7 @@ const DiscoverPage = () => {
             )}
           </DropdownWrapper>
 
-          {/* Clear Filters */}
           <Button
-            colorScheme="red"
             onClick={() => {
               setSelectedArtist("");
               setSelectedAlbum("");
@@ -237,23 +256,57 @@ const DiscoverPage = () => {
           </Button>
         </Flex>
 
-        {/* Songs Grid Inside the Same Glass */}
         <SongsContainer>
           {songState.loading ? (
             <LoadingText>Loading songs...</LoadingText>
-          ) : songsToRender.length > 0 ? (
-            songsToRender.map((song) => (
-              <SongBox key={song._id}>
-                <img
-                  src={song.image || "https://via.placeholder.com/200"}
-                  alt={song.title}
-                />
-                <p>{song.title}</p>
-                <small>
-                  {typeof song.artistId === "string" ? "" : song.artistId?.name}
-                </small>
-              </SongBox>
-            ))
+          ) : filteredSongs.length > 0 ? (
+            filteredSongs.map((song: SongResponse) => {
+              const artistName =
+                typeof song.artistId === "string"
+                  ? artistState.artists.find((a) => a._id === song.artistId)
+                      ?.name ?? "Unknown"
+                  : song.artistId.name ?? "Unknown";
+
+              // const albumName =
+              //   typeof song.albumId === "string"
+              //     ? albumState.albums.find((a) => a._id === song.albumId)
+              //         ?.name ?? "Unknown"
+              //     : song.albumId.name ?? "Unknown";
+
+              // const genres = Array.isArray(song.genre)
+              //   ? song.genre
+              //       .map((g) =>
+              //         typeof g === "string"
+              //           ? genreState.genres.find((gg) => gg._id === g)?.name ??
+              //             "Unknown"
+              //           : g.name ?? "Unknown"
+              //       )
+              //       .join(", ")
+              //   : "Unknown";
+
+              return (
+                <SongBox
+                  key={song._id}
+                  onClick={() => {
+                    if (song.spotifyUrl) window.open(song.spotifyUrl, "_blank");
+                  }}
+                >
+                  <img
+                    src={song.image || "https://via.placeholder.com/200"}
+                    alt={song.title}
+                  />
+                  <Flex direction="row">
+                    <Flex direction="column">
+                      {" "}
+                      <p>{song.title}</p>
+                      <small> {artistName}</small>
+                    </Flex>
+                    {/* <small>{albumName}</small>
+                    <small> {genres}</small> */}
+                  </Flex>
+                </SongBox>
+              );
+            })
           ) : (
             <EmptyText>No songs found</EmptyText>
           )}

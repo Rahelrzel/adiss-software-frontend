@@ -21,7 +21,7 @@ const Input = styled.input`
   transition: border-color 0.3s;
 
   &:focus {
-    border-color: #1db954;
+    border-color: #ffffffff;
   }
 `;
 

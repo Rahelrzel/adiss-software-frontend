@@ -4,3 +4,10 @@ export interface Album {
   releaseYear: string;
   artistId: string;
 }
+
+export interface AlbumResponse {
+  _id: string;
+  name: string;
+  artistId: string | { _id: string; name?: string };
+  releaseDate?: string;
+}

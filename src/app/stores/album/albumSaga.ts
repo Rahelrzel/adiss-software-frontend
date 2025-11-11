@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 
 import { AxiosError } from "axios";
 import albumApi, { type CreateAlbumParams } from "../../api/album";
@@ -50,6 +50,6 @@ function* getAlbums() {
 }
 
 export function* albumSaga() {
-  yield takeEvery(createAlbumRequest.type, createAlbum);
-  yield takeEvery(getAlbumsRequest.type, getAlbums);
+  yield takeLatest(createAlbumRequest.type, createAlbum);
+  yield takeLatest(getAlbumsRequest.type, getAlbums);
 }

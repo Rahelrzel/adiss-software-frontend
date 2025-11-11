@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import GlassCard from "../../components/GlassCard";
 import { FormikInput } from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { Flex } from "../../components/ui/Flex.syle.tsx";
+import { Flex } from "../../components/ui/Flex.style.tsx";
 import { BiPlus } from "react-icons/bi";
 import { MdArrowDropDown } from "react-icons/md";
 

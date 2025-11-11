@@ -5,7 +5,7 @@ import {
   fetchPlaylistByIdRequest,
   removeSongFromPlaylistRequest,
 } from "../../../stores/playlist/playlistSlice";
-import { Flex } from "../../../components/ui/Flex.syle";
+import { Flex } from "../../../components/ui/Flex.style";
 import PlaylistCard from "../../Dashboard/dashboard.style";
 import GlassCard from "../../../components/GlassCard";
 import Button from "../../../components/ui/Button";
@@ -43,7 +43,7 @@ const PlaylistById = () => {
     dispatch(
       removeSongFromPlaylistRequest({ playlistId: playlist._id, songId })
     );
-    setOpenMenuId(null); // close the menu after deletion
+    setOpenMenuId(null);
   };
 
   if (loading) {
@@ -55,6 +55,8 @@ const PlaylistById = () => {
   }
 
   const songs = playlist.songs?.filter(Boolean) || [];
+
+  const isEditable = !playlist.isPublished;
 
   return (
     <GlassCard width="1020px" height="auto">
@@ -72,13 +74,15 @@ const PlaylistById = () => {
             <p style={{ color: "white" }}>{playlist.description}</p>
             <p style={{ color: "white" }}>Songs: {songs.length}</p>
 
-            <Button
-              shape="round"
-              colorScheme="white"
-              onClick={() => router(`/dashboard/createSong/${playlist._id}`)}
-            >
-              Add song
-            </Button>
+            {isEditable && (
+              <Button
+                shape="round"
+                colorScheme="white"
+                onClick={() => router(`/dashboard/createSong/${playlist._id}`)}
+              >
+                Add song
+              </Button>
+            )}
           </Flex>
         </Flex>
 
@@ -133,27 +137,29 @@ const PlaylistById = () => {
                   </Flex>
                 </SongInfo>
 
-                {/* Menu Button */}
-                <OptionsButton onClick={() => handleMenuToggle(song._id)}>
-                  <BsThreeDotsVertical />
-                </OptionsButton>
+                {isEditable && (
+                  <>
+                    <OptionsButton onClick={() => handleMenuToggle(song._id)}>
+                      <BsThreeDotsVertical />
+                    </OptionsButton>
 
-                {/* Dropdown Menu */}
-                {openMenuId === song._id && (
-                  <OptionsMenu>
-                    <button
-                      onClick={() =>
-                        router(
-                          `/dashboard/updateSong/${song._id}/${playlist?._id}`
-                        )
-                      }
-                    >
-                      Update
-                    </button>
-                    <button onClick={() => handleDelete(song._id)}>
-                      Delete
-                    </button>
-                  </OptionsMenu>
+                    {openMenuId === song._id && (
+                      <OptionsMenu>
+                        <button
+                          onClick={() =>
+                            router(
+                              `/dashboard/updateSong/${song._id}/${playlist?._id}`
+                            )
+                          }
+                        >
+                          Update
+                        </button>
+                        <button onClick={() => handleDelete(song._id)}>
+                          Delete
+                        </button>
+                      </OptionsMenu>
+                    )}
+                  </>
                 )}
               </SongRow>
             ))

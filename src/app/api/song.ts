@@ -25,12 +25,12 @@ const createSong = async (data: CreateSongParams, token: string) => {
   return res.data;
 };
 
-// ✅ Get all songs
-const getSongs = async (token: string) => {
-  const res = await axios.get<SongResponse[]>(
-    `${apiUrl}/api/songs`,
-    authHeader(token)
-  );
+// api/song.ts
+const getSongs = async (token: string, search?: string) => {
+  const res = await axios.get<SongResponse[]>(`${apiUrl}/api/songs`, {
+    ...authHeader(token),
+    params: search ? { q: search } : {},
+  });
   return res.data;
 };
 

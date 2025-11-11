@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type { CreateAlbumParams } from "../../api/album";
-import type { Album } from "../../types/album.type";
+import type { Album, AlbumResponse } from "../../types/album.type";
 
 interface AlbumState {
-  albums: Album[];
+  albums: AlbumResponse[];
   album?: Album;
   loading: boolean;
   error: string | null;

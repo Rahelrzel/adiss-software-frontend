@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 
 import { AxiosError } from "axios";
 
@@ -52,6 +52,6 @@ function* getGenres() {
 }
 
 export function* genreSaga() {
-  yield takeEvery(createGenreRequest.type, createGenre);
-  yield takeEvery(getGenresRequest.type, getGenres);
+  yield takeLatest(createGenreRequest.type, createGenre);
+  yield takeLatest(getGenresRequest.type, getGenres);
 }

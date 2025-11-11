@@ -21,9 +21,13 @@ const songSlice = createSlice({
   name: "song",
   initialState,
   reducers: {
-    fetchSongsRequest: (state) => {
+    fetchSongsRequest: (
+      state,
+      _action: PayloadAction<{ search?: string } | undefined>
+    ) => {
       state.loading = true;
     },
+
     fetchSongsSuccess: (state, action: PayloadAction<SongResponse[]>) => {
       state.songs = action.payload;
       state.loading = false;

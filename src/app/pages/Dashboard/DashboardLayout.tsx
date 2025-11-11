@@ -10,7 +10,7 @@ import Background from "../../components/Background";
 
 import Button from "../../components/ui/Button";
 import { Container, Main, Menu, Sidebar } from "./dashboard.style";
-import { Flex } from "../../components/ui/Flex.syle";
+import { Flex } from "../../components/ui/Flex.style";
 
 const DashboardLayout = () => {
   const route = useNavigate();

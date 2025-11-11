@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 import { AxiosError } from "axios";
 import statApi from "../../api/stat";
 import {
@@ -81,8 +81,8 @@ function* getAlbumStats() {
 }
 
 export function* statSaga() {
-  yield takeEvery(getTotalsRequest.type, getTotals);
-  yield takeEvery(getSongsByGenreRequest.type, getSongsByGenre);
-  yield takeEvery(getArtistStatsRequest.type, getArtistStats);
-  yield takeEvery(getAlbumStatsRequest.type, getAlbumStats);
+  yield takeLatest(getTotalsRequest.type, getTotals);
+  yield takeLatest(getSongsByGenreRequest.type, getSongsByGenre);
+  yield takeLatest(getArtistStatsRequest.type, getArtistStats);
+  yield takeLatest(getAlbumStatsRequest.type, getAlbumStats);
 }

@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 
 import { loginDone, loginError } from "./userSlice";
 import { AxiosError } from "axios";
@@ -42,8 +42,8 @@ function* SignUp(action: PayloadAction<SignupParameters>) {
 }
 
 export function* watchLogin() {
-  yield takeEvery("user/loginRequest", Login);
+  yield takeLatest("user/loginRequest", Login);
 }
 export function* watchSignup() {
-  yield takeEvery("user/signUpRequest", SignUp);
+  yield takeLatest("user/signUpRequest", SignUp);
 }

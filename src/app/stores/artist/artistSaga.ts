@@ -1,4 +1,4 @@
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 
 import { AxiosError } from "axios";
 import artistApi, { type CreateArtistParams } from "../../api/artist";
@@ -54,6 +54,6 @@ function* getArtists() {
 }
 
 export function* artistSaga() {
-  yield takeEvery(createArtistRequest.type, createArtist);
-  yield takeEvery(getArtistsRequest.type, getArtists);
+  yield takeLatest(createArtistRequest.type, createArtist);
+  yield takeLatest(getArtistsRequest.type, getArtists);
 }

@@ -21,7 +21,7 @@ import { getArtistsRequest } from "../../stores/artist/artistSlice";
 import { getGenresRequest } from "../../stores/genre/genreSlice";
 import { getAlbumsRequest } from "../../stores/album/albumSlice"; // ✅ new import
 import { CreateSongSchema } from "./validation";
-import { Flex } from "../../components/ui/Flex.syle.tsx";
+import { Flex } from "../../components/ui/Flex.style.tsx";
 import { BiPlus } from "react-icons/bi";
 import { MdArrowDropDown } from "react-icons/md";
 import CreateAlbumModal from "./CreateAlbumPage.tsx";

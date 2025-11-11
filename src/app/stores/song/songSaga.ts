@@ -1,6 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CreateSongParams, UpdateSongParams } from "../../api/song";
-import { call, put, takeEvery, type SagaReturnType } from "redux-saga/effects";
+import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
 import songApi from "../../api/song";
 import {
   createSongError,
@@ -36,14 +36,19 @@ function* CreateSong(action: PayloadAction<CreateSongParams>) {
   }
 }
 
-function* FetchSongs() {
+function* FetchSongs(action: PayloadAction<{ search?: string } | undefined>) {
   try {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("User token not found");
+
+    const search = action.payload?.search?.trim() || "";
+
     const songs: SagaReturnType<typeof songApi.getSongs> = yield call(
       songApi.getSongs,
-      token
+      token,
+      search
     );
+
     yield put(fetchSongsSuccess(songs));
   } catch (e) {
     if (e instanceof AxiosError) {
@@ -51,6 +56,7 @@ function* FetchSongs() {
     }
   }
 }
+
 function* GetSongById(action: PayloadAction<string>) {
   try {
     const token = localStorage.getItem("token");
@@ -111,17 +117,17 @@ function* UpdateSong(
 }
 
 export function* watchCreateSong() {
-  yield takeEvery(createSongRequest.type, CreateSong);
+  yield takeLatest(createSongRequest.type, CreateSong);
 }
 
 export function* watchFetchSong() {
-  yield takeEvery(fetchSongsRequest.type, FetchSongs);
+  yield takeLatest(fetchSongsRequest.type, FetchSongs);
 }
 
 export function* watchGetSongById() {
-  yield takeEvery(fetchSongByIdRequest.type, GetSongById);
+  yield takeLatest(fetchSongByIdRequest.type, GetSongById);
 }
 
 export function* watchUpdateSong() {
-  yield takeEvery(updateSongRequest.type, UpdateSong);
+  yield takeLatest(updateSongRequest.type, UpdateSong);
 }
