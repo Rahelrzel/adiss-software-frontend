@@ -33,7 +33,6 @@ import CreateArtistModal from "./CreateArtistPage.tsx";
 import CreateGenreModal from "./CreateGenrepage.tsx";
 import SpotifySearch from "./SpotifySeach.tsx";
 
-// -------------------- TYPES --------------------
 interface PopulatedArtist {
   _id: string;
   name: string;
@@ -57,7 +56,6 @@ interface SongFormValues {
   playlistId?: string;
 }
 
-// -------------------- COMPONENT --------------------
 const UpdateSong = () => {
   const { id, playlistId } = useParams<{ id: string; playlistId?: string }>();
   const router = useNavigate();
@@ -82,12 +80,10 @@ const UpdateSong = () => {
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
   const [showAlbumDropdown, setShowAlbumDropdown] = useState(false);
 
-  // -------------------- FETCH SONG --------------------
-  useEffect(() => {
+  -useEffect(() => {
     if (id) dispatch(fetchSongByIdRequest(id));
   }, [dispatch, id]);
 
-  // -------------------- FORM --------------------
   const formik = useFormik<SongFormValues>({
     enableReinitialize: true,
     initialValues: {
@@ -113,7 +109,6 @@ const UpdateSong = () => {
     onSubmit: (values) => {
       if (!id) return;
 
-      // ✅ Clean payload for backend validation
       const payload = {
         ...values,
         artistId:
@@ -129,14 +124,13 @@ const UpdateSong = () => {
           : [],
       };
 
-      console.log("🟢 Update payload sent to backend:", payload);
+      console.log(payload);
       dispatch(updateSongRequest({ id, data: payload }));
       hasSubmitted.current = true;
     },
   });
 
-  // -------------------- SET DISPLAY NAMES --------------------
-  useEffect(() => {
+  -useEffect(() => {
     const song = songState.currentSong;
     if (!song) return;
 
@@ -159,7 +153,6 @@ const UpdateSong = () => {
     );
   }, [songState.currentSong]);
 
-  // -------------------- NAVIGATE AFTER UPDATE --------------------
   useEffect(() => {
     if (hasSubmitted.current && !songState.loading && !songState.error) {
       router(`/dashboard/playlist/${playlistId || ""}`);
@@ -170,7 +163,6 @@ const UpdateSong = () => {
   if (songState.loading)
     return <p style={{ color: "white" }}>Loading song data...</p>;
 
-  // -------------------- RENDER --------------------
   return (
     <Flex direction="row" gap="20px">
       <GlassCard width="600px" height="500px">
@@ -189,7 +181,6 @@ const UpdateSong = () => {
             />
             <FormikInput name="image" formik={formik} placeholder="Image URL" />
 
-            {/* Artist Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -242,7 +233,6 @@ const UpdateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* Genre Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -295,7 +285,6 @@ const UpdateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* Album Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -367,7 +356,6 @@ const UpdateSong = () => {
         </form>
       </GlassCard>
 
-      {/* Spotify Search */}
       <GlassCard width="300px">
         <SpotifySearch
           onSelectTrack={(track) => {
