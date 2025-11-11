@@ -1,5 +1,4 @@
 import { call, put, takeLatest, type SagaReturnType } from "redux-saga/effects";
-
 import { loginDone, loginError } from "./userSlice";
 import { AxiosError } from "axios";
 import UserApi, {
@@ -7,43 +6,51 @@ import UserApi, {
   type SignupParameters,
 } from "../../api/user";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { showErrorToast } from "../../components/Toast";
+
+function normalizeError(e: unknown) {
+  if (e instanceof AxiosError) {
+    return { msg: e.response?.data?.message || "Something went wrong" };
+  }
+  return { msg: "Something went wrong" };
+}
 
 function* Login(action: PayloadAction<LoginParameters>) {
   try {
-    let user: SagaReturnType<typeof UserApi.login> = yield call(
+    const user: SagaReturnType<typeof UserApi.login> = yield call(
       UserApi.login,
       action.payload
     );
-    if (user.token) {
-      localStorage.setItem("token", user.token);
-    }
+
+    if (user.token) localStorage.setItem("token", user.token);
 
     yield put(loginDone(user));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(loginError(e.response?.data));
-    }
+  } catch (err: unknown) {
+    const error = normalizeError(err);
+    yield put(loginError(error));
+    showErrorToast(error.msg);
   }
 }
 
 function* SignUp(action: PayloadAction<SignupParameters>) {
   try {
-    let user: SagaReturnType<typeof UserApi.signUp> = yield call(
+    const user: SagaReturnType<typeof UserApi.signUp> = yield call(
       UserApi.signUp,
       action.payload
     );
 
     yield put(loginDone(user));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(loginError(e.response?.data));
-    }
+  } catch (err: unknown) {
+    const error = normalizeError(err);
+    yield put(loginError(error));
+    showErrorToast(error.msg);
   }
 }
 
 export function* watchLogin() {
   yield takeLatest("user/loginRequest", Login);
 }
+
 export function* watchSignup() {
   yield takeLatest("user/signUpRequest", SignUp);
 }

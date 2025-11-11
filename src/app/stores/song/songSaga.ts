@@ -18,21 +18,30 @@ import {
 } from "./songSlice";
 import { AxiosError } from "axios";
 import type { SongResponse } from "../../types/song.type";
+import { showErrorToast } from "../../components/Toast";
+
+function normalizeError(e: unknown) {
+  if (e instanceof AxiosError) {
+    const message = e.response?.data?.message || "Something went wrong";
+    return { msg: message };
+  }
+  return { msg: "Something went wrong" };
+}
 
 function* CreateSong(action: PayloadAction<CreateSongParams>) {
   try {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("user token not found ");
-    let song: SagaReturnType<typeof songApi.createSong> = yield call(
+    if (!token) throw new Error("User token not found");
+    const song: SagaReturnType<typeof songApi.createSong> = yield call(
       songApi.createSong,
       action.payload,
       token
     );
     yield put(createSongSuccess(song));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(createSongError(e.response?.data));
-    }
+  } catch (e: unknown) {
+    const error = normalizeError(e);
+    showErrorToast(error.msg);
+    yield put(createSongError(error));
   }
 }
 
@@ -50,10 +59,10 @@ function* FetchSongs(action: PayloadAction<{ search?: string } | undefined>) {
     );
 
     yield put(fetchSongsSuccess(songs));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(fetchSongsError(e.response?.data));
-    }
+  } catch (e: unknown) {
+    const error = normalizeError(e);
+    showErrorToast(error.msg);
+    yield put(fetchSongsError(error));
   }
 }
 
@@ -69,10 +78,10 @@ function* GetSongById(action: PayloadAction<string>) {
     );
 
     yield put(fetchSongByIdSuccess(song));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(fetchSongByIdError(e.response?.data));
-    }
+  } catch (e: unknown) {
+    const error = normalizeError(e);
+    showErrorToast(error.msg);
+    yield put(fetchSongByIdError(error));
   }
 }
 
@@ -109,10 +118,10 @@ function* UpdateSong(
     );
 
     yield put(updateSongSuccess(updatedSong));
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      yield put(updateSongError(e.response?.data));
-    }
+  } catch (e: unknown) {
+    const error = normalizeError(e);
+    showErrorToast(error.msg);
+    yield put(updateSongError(error));
   }
 }
 

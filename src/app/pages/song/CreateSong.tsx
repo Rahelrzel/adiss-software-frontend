@@ -28,6 +28,7 @@ import CreateAlbumModal from "./CreateAlbumPage.tsx";
 import CreateArtistModal from "./CreateArtistPage.tsx";
 import CreateGenreModal from "./CreateGenrepage.tsx";
 import SpotifySearch from "./SpotifySeach.tsx";
+import { showErrorToast } from "../../components/Toast.tsx";
 
 const CreateSong = () => {
   const [isAlbumModalOpen, setAlbumModalOpen] = useState(false);
@@ -94,12 +95,15 @@ const CreateSong = () => {
   }, [songState.loading, songState.error, router, playlistId]);
 
   useEffect(() => {
-    if (songState.error && songState.error.field) {
-      formik.setFieldError(songState.error.field, songState.error.msg);
+    if (songState.error) {
+      if (songState.error.field) {
+        formik.setFieldError(songState.error.field, songState.error.msg);
+      } else {
+        showErrorToast(songState.error.msg);
+      }
     }
   }, [songState.error]);
 
-  // Dropdown togglers
   const handleArtistDropdown = () => {
     if (!showArtistDropdown) dispatch(getArtistsRequest());
     setShowArtistDropdown((prev) => !prev);
@@ -117,7 +121,7 @@ const CreateSong = () => {
 
   return (
     <Flex direction="row">
-      <GlassCard width="600px" height="500px">
+      <GlassCard width="600px" height="600px">
         <Text>Create Song</Text>{" "}
         <Form onSubmit={formik.handleSubmit}>
           <StyledForm>
@@ -127,7 +131,6 @@ const CreateSong = () => {
               placeholder="Song title"
             />
 
-            {/* 🎤 Artist Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput
@@ -181,7 +184,6 @@ const CreateSong = () => {
               )}
             </DropdownWrapper>
 
-            {/* 🎶 Genre Dropdown */}
             <DropdownWrapper>
               <Flex direction="row" gap="10px">
                 <FormikInput

@@ -42,10 +42,13 @@ const LoginPage = () => {
   }, [user.user]);
 
   useEffect(() => {
-    if (user.error && user.error.field) {
-      formik.setFieldError(user.error.field, user.error.msg);
+    if (user.error) {
+      if (user.error.field) {
+        formik.setFieldError(user.error.field, user.error.msg);
+      }
     }
   }, [user.error]);
+
   return (
     <Background>
       <GlassCard width="400px" height="550px">

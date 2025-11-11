@@ -13,10 +13,12 @@ import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/700.css";
 import "@fontsource/playfair-display/400.css";
 import "@fontsource/playfair-display/700.css";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
+      <ToastContainer />
       <RouterProvider router={routerConfig} />
       <Global styles={GlobalStyle} />
     </Provider>
