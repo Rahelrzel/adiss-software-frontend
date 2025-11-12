@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../stores/utils/hooks";
 import { getArtistStatsRequest } from "../stores/stat/statSlice";
 
-const ArtistStats: React.FC = () => {
+const ArtistStats = () => {
   const dispatch = useAppDispatch();
   const stat = useAppSelector((state) => state.stat);
 

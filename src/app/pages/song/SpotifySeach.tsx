@@ -113,10 +113,7 @@ const SpotifySearch: React.FC<SpotifySearchProps> = ({ onSelectTrack }) => {
     if (onSelectTrack) onSelectTrack(track);
     setTrackSelected(true);
 
-    // ✅ Reset search input and results
     setQuery("");
-    // Optional: clear tracks in redux if you want
-    // dispatch(clearSpotifyTracks());
   };
   return (
     <div css={container}>
@@ -147,7 +144,7 @@ const SpotifySearch: React.FC<SpotifySearchProps> = ({ onSelectTrack }) => {
                 handleSelectTrack({
                   title: track.title,
                   artist: track.artist,
-                  spotifyUrl: track.spotifyUrl, // or track.uri if you have it
+                  spotifyUrl: track.spotifyUrl,
                   image: track.image,
                 })
               }

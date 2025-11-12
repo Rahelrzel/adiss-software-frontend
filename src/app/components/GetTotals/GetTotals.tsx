@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import artistImg from "../../../assets/artist.png";
 import albumImg from "../../../assets/album.png";
@@ -15,7 +15,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../stores/utils/hooks";
 import { getTotalsRequest } from "../../stores/stat/statSlice";
 
-const GetTotals: React.FC = () => {
+const GetTotals = () => {
   const dispatch = useAppDispatch();
   const stat = useAppSelector((state) => state.stat);
 

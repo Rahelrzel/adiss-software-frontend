@@ -23,10 +23,10 @@ const Dashboard = () => {
     <Container>
       <SearchSongs onSearch={setIsSearching} />
 
-      {/* 👇 Hide dashboard only while searching */}
       {!isSearching && (
         <GlassCard width="1020px" height="auto">
           <GetTotals />
+
           <div>Playlists</div>
           {loading ? (
             <div>Loading playlists...</div>
