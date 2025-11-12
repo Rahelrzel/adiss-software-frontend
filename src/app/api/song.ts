@@ -12,10 +12,8 @@ export interface CreateSongParams {
   playlistId?: string;
 }
 
-// For updating, we’ll send all fields *except id* in the body
 export interface UpdateSongParams extends Partial<CreateSongParams> {}
 
-// ✅ Create song
 const createSong = async (data: CreateSongParams, token: string) => {
   const res = await axios.post<SongResponse>(
     `${apiUrl}/api/songs`,
@@ -25,7 +23,6 @@ const createSong = async (data: CreateSongParams, token: string) => {
   return res.data;
 };
 
-// api/song.ts
 const getSongs = async (token: string, search?: string) => {
   const res = await axios.get<SongResponse[]>(`${apiUrl}/api/songs`, {
     ...authHeader(token),
@@ -34,7 +31,6 @@ const getSongs = async (token: string, search?: string) => {
   return res.data;
 };
 
-// ✅ Get single song by ID
 const getSongById = async (id: string, token: string) => {
   const res = await axios.get<SongResponse>(
     `${apiUrl}/api/songs/${id}`,
@@ -43,7 +39,6 @@ const getSongById = async (id: string, token: string) => {
   return res.data;
 };
 
-// ✅ Update song (id only in URL — not in body)
 const updateSong = async (
   id: string,
   data: UpdateSongParams,
@@ -57,7 +52,6 @@ const updateSong = async (
   return res.data;
 };
 
-// ✅ Delete song
 const deleteSong = async (id: string, token: string) => {
   const res = await axios.delete(
     `${apiUrl}/api/songs/${id}`,

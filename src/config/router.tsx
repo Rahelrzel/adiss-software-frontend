@@ -23,7 +23,7 @@ export const routerConfig = createBrowserRouter([
       { path: "createPlaylist", element: <CreatePlaylist /> },
       { path: "createSong/:playlistId?", element: <CreateSong /> },
       { path: "updateSong/:id/:playlistId?", element: <UpdateSong /> },
-      { path: "discover", element: <DiscoverPage /> }, // ✅ new route
+      { path: "discover", element: <DiscoverPage /> },
     ],
   },
 ]);
